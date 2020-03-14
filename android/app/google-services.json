@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "878872302010",
+    "firebase_url": "https://smartpark-c3fef.firebaseio.com",
+    "project_id": "smartpark-c3fef",
+    "storage_bucket": "smartpark-c3fef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:878872302010:android:b496c684a16d3985128d83",
+        "android_client_info": {
+          "package_name": "com.example.smartpark"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "878872302010-bbninkiek0os5ik6gi4i3a8lnkfb0e27.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-NWkRD40LdInD5gi6fJWY1rYzvt8Xu64"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "878872302010-bbninkiek0os5ik6gi4i3a8lnkfb0e27.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
