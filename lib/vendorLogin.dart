@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartpark/vendorAddLot.dart';
 import 'package:smartpark/vendorRegister.dart';
+
+import 'vendorDashboard.dart';
 
 class VendorLogin extends StatefulWidget {
   @override
@@ -8,6 +11,40 @@ class VendorLogin extends StatefulWidget {
 }
 
 class _VendorLoginState extends State<VendorLogin> {
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+  Future<String> login() async {
+    print(email.text);
+    print(password.text);
+
+    FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: email.text.trim(), password: password.text.trim()))
+        .user;
+    _showLoginSuccessDialog();
+    return user.uid;
+  }
+
+  void _showLoginSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          content: Text("login Success"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Ok"),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => VendorDashboard()));
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,6 +73,7 @@ class _VendorLoginState extends State<VendorLogin> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                    controller: email,
                     decoration: InputDecoration(
                         hintText: 'Email', border: OutlineInputBorder()),
                   ),
@@ -44,6 +82,7 @@ class _VendorLoginState extends State<VendorLogin> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                    controller: password,
                     decoration: InputDecoration(
                         hintText: 'Password', border: OutlineInputBorder()),
                   ),
@@ -52,13 +91,9 @@ class _VendorLoginState extends State<VendorLogin> {
                   height: 20,
                 ),
                 InkWell(
-                  onTap: () {
-                    // Navigator.push(context, MaterialPageRoute(builder: (context)=>RiderRegister()));
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => VendorAddLot()));
-                  },
+                  onTap:
+                      // Navigator.push(context, MaterialPageRoute(builder: (context)=>RiderRegister()));
+                      login,
                   child: Container(
                     height: 50,
                     margin: EdgeInsets.all(8),

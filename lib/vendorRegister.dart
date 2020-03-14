@@ -24,26 +24,45 @@ class _VendorRegisterState extends State<VendorRegister> {
 
     FirebaseUser user = (await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
-                email: email.text, password: password.text))
+                email: email.text.trim(), password: password.text.trim()))
         .user;
-    return (user.uid);
-    print(user.uid);
     createUserDb();
+    _showAccountCreatedDialog();
 
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => VendorLogin()));
     return user.uid;
   }
 
   Future<String> createUserDb() async {
     Firestore.instance.collection('users').document(email.text).setData({
-      'email': email.text,
-      'firstName': firstName.text,
-      'lastName': lastName.text,
-      'contact': contact.text,
+      'email': email.text.trim(),
+      'firstName': firstName.text.trim(),
+      'lastName': lastName.text.trim(),
+      'contact': contact.text.trim(),
       'userType': "vendor"
     });
     return email.text;
+  }
+
+  void _showAccountCreatedDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: Text("Signup Successful"),
+          content: Text("Account created, Now login"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Ok"),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => VendorLogin()));
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
