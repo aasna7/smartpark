@@ -18,25 +18,47 @@ class _RiderRegisterState extends State<RiderRegister> {
   Future<String> register() async {
     FirebaseUser user = (await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
-                email: email.text, password: password.text))
+                email: email.text.trim(), password: password.text.trim()))
         .user;
     return (user.uid);
     print(user.uid);
     createUserDb();
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => RiderLogin()));
+    _showAccountCreatedDialog();
+
     return user.uid;
   }
 
   Future<String> createUserDb() async {
     Firestore.instance.collection('users').document(email.text).setData({
-      'email': email.text,
-      'firstName': firstName.text,
-      'lastName': lastName.text,
-      'contact': contact.text,
+      'email': email.text.trim(),
+      'firstName': firstName.text.trim(),
+      'lastName': lastName.text.trim(),
+      'contact': contact.text.trim(),
       'userType': "rider"
     });
     return email.text;
+  }
+
+  void _showAccountCreatedDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: Text("Signup Successful"),
+          content: Text("Account created, Now login"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Ok"),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => RiderLogin()));
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -130,20 +152,23 @@ class _RiderRegisterState extends State<RiderRegister> {
                 SizedBox(
                   height: 20,
                 ),
-                Container(
-                  height: 50,
-                  margin: EdgeInsets.all(8),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                      color: Colors.green[800],
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Center(
-                    child: Text('REGISTER',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                        )),
+                InkWell(
+                  onTap: register,
+                  child: Container(
+                    height: 50,
+                    margin: EdgeInsets.all(8),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        color: Colors.green[800],
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Center(
+                      child: Text('REGISTER',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          )),
+                    ),
                   ),
                 ),
               ],

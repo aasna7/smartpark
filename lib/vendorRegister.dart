@@ -10,6 +10,7 @@ class VendorRegister extends StatefulWidget {
 }
 
 class _VendorRegisterState extends State<VendorRegister> {
+  bool isLoading = false;
   String user;
   TextEditingController firstName = TextEditingController();
   TextEditingController lastName = TextEditingController();

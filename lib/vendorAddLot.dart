@@ -25,43 +25,200 @@ class _VendorAddLotState extends State<VendorAddLot> {
                 ],
                 borderRadius: BorderRadius.circular(10)),
             child: Column(
+              // mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Image.asset(
-                  'images/logo.PNG',
-                  height: 200,
-                  width: 200,
+                Center(
+                  child: Image.asset(
+                    'images/logo.PNG',
+                    height: 200,
+                    width: 200,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: TextFormField(
                     decoration: InputDecoration(
-                        hintText: 'Vehicle Type', border: OutlineInputBorder()),
+                        hintText: 'Parking Lot Name',
+                        border: OutlineInputBorder()),
                   ),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
                     decoration: InputDecoration(
-                        hintText: 'Vehicle Model',
-                        border: OutlineInputBorder()),
+                        hintText: 'Location', border: OutlineInputBorder()),
                   ),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 10,
+                ),
+                Row(
+                  children: <Widget>[
+                    Container(
+                      width: MediaQuery.of(context).size.width / 2 - 12,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                              hintText: 'Open Time',
+                              border: OutlineInputBorder()),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width / 2 - 12,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                              hintText: 'Close Time',
+                              border: OutlineInputBorder()),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                        hintText: 'Vehicle Number',
-                        border: OutlineInputBorder()),
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Text(
+                    "Opening Days",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.start,
                   ),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 10,
+                ),
+                Wrap(
+                  spacing: 15,
+                  children: <Widget>[
+                    Container(
+                      height: 50,
+                      margin: EdgeInsets.all(8),
+                      width: MediaQuery.of(context).size.width / 8,
+                      decoration: BoxDecoration(
+                          color: Colors.white10,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(width: 1)),
+                      child: Center(
+                        child: Text('S',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ),
+                    ),
+                    Container(
+                      height: 50,
+                      margin: EdgeInsets.all(8),
+                      width: MediaQuery.of(context).size.width / 8,
+                      decoration: BoxDecoration(
+                          color: Colors.white10,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(width: 1)),
+                      child: Center(
+                        child: Text('M',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ),
+                    ),
+                    Container(
+                      height: 50,
+                      margin: EdgeInsets.all(8),
+                      width: MediaQuery.of(context).size.width / 8,
+                      decoration: BoxDecoration(
+                          color: Colors.white10,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(width: 1)),
+                      child: Center(
+                        child: Text('T',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ),
+                    ),
+                    Container(
+                      height: 50,
+                      margin: EdgeInsets.all(8),
+                      width: MediaQuery.of(context).size.width / 8,
+                      decoration: BoxDecoration(
+                          color: Colors.white10,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(width: 1)),
+                      child: Center(
+                        child: Text('W',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ),
+                    ),
+                    Container(
+                      height: 50,
+                      margin: EdgeInsets.all(8),
+                      width: MediaQuery.of(context).size.width / 8,
+                      decoration: BoxDecoration(
+                          color: Colors.white10,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(width: 1)),
+                      child: Center(
+                        child: Text('T',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ),
+                    ),
+                    Container(
+                      height: 50,
+                      margin: EdgeInsets.all(8),
+                      width: MediaQuery.of(context).size.width / 8,
+                      decoration: BoxDecoration(
+                          color: Colors.white10,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(width: 1)),
+                      child: Center(
+                        child: Text('F',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ),
+                    ),
+                    Container(
+                      height: 50,
+                      margin: EdgeInsets.all(8),
+                      width: MediaQuery.of(context).size.width / 8,
+                      decoration: BoxDecoration(
+                          color: Colors.white10,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(width: 1)),
+                      child: Center(
+                        child: Text('S',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ),
+                    ),
+                  ],
                 ),
                 Container(
                   height: 50,
