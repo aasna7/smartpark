@@ -110,7 +110,6 @@ class _VendorAddLotState extends State<VendorAddLot> {
                   children: <Widget>[
                     InkWell(
                       onTap: () {
-<<<<<<< HEAD
                         setState(() {
                           sunday = !sunday;
                           if (!sunday) {
@@ -123,8 +122,8 @@ class _VendorAddLotState extends State<VendorAddLot> {
                       },
                       child: Container(
                         height: 50,
-                        margin: EdgeInsets.all(8),
-                        width: MediaQuery.of(context).size.width / 8,
+                        margin: EdgeInsets.all(7),
+                        width: MediaQuery.of(context).size.width / 10,
                         decoration: sunday
                             ? BoxDecoration(
                                 color: Colors.white10,
@@ -158,7 +157,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                       child: Container(
                         height: 50,
                         margin: EdgeInsets.all(8),
-                        width: MediaQuery.of(context).size.width / 8,
+                        width: MediaQuery.of(context).size.width / 10,
                         decoration: monday
                             ? BoxDecoration(
                                 color: Colors.white10,
@@ -175,45 +174,6 @@ class _VendorAddLotState extends State<VendorAddLot> {
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
                                 ))),
-=======
-                        bool _sunday = true;
-                        color:
-                        Colors.green;
-                      },
-                      child: Container(
-                        height: 50,
-                        margin: EdgeInsets.all(7),
-                        width: MediaQuery.of(context).size.width / 10,
-                        decoration: BoxDecoration(
-                            color: Colors.white10,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(width: 1)),
-                        child: Center(
-                          child: Text('S',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              )),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 50,
-                      margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width / 10,
-                      decoration: BoxDecoration(
-                          color: Colors.white10,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(width: 1)),
-                      child: Center(
-                        child: Text('M',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            )),
->>>>>>> 56fd4350714a2c05033b66152923fddc1f3b7865
                       ),
                     ),
                     Container(
