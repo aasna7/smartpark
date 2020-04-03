@@ -36,7 +36,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
                     decoration: InputDecoration(
                         hintText: 'Parking Lot Name',
@@ -44,7 +44,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                   ),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 5,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -54,7 +54,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                   ),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 5,
                 ),
                 Row(
                   children: <Widget>[
@@ -83,7 +83,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                   ],
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 5,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 8),
@@ -94,32 +94,39 @@ class _VendorAddLotState extends State<VendorAddLot> {
                   ),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 5,
                 ),
                 Wrap(
-                  spacing: 15,
+                  spacing: 0,
                   children: <Widget>[
-                    Container(
-                      height: 50,
-                      margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width / 8,
-                      decoration: BoxDecoration(
-                          color: Colors.white10,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(width: 1)),
-                      child: Center(
-                        child: Text('S',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            )),
+                    InkWell(
+                      onTap: () {
+                        bool _sunday = true;
+                        color:
+                        Colors.green;
+                      },
+                      child: Container(
+                        height: 50,
+                        margin: EdgeInsets.all(7),
+                        width: MediaQuery.of(context).size.width / 10,
+                        decoration: BoxDecoration(
+                            color: Colors.white10,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(width: 1)),
+                        child: Center(
+                          child: Text('S',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              )),
+                        ),
                       ),
                     ),
                     Container(
                       height: 50,
                       margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width / 8,
+                      width: MediaQuery.of(context).size.width / 10,
                       decoration: BoxDecoration(
                           color: Colors.white10,
                           borderRadius: BorderRadius.circular(10),
@@ -136,7 +143,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                     Container(
                       height: 50,
                       margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width / 8,
+                      width: MediaQuery.of(context).size.width / 10,
                       decoration: BoxDecoration(
                           color: Colors.white10,
                           borderRadius: BorderRadius.circular(10),
@@ -153,7 +160,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                     Container(
                       height: 50,
                       margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width / 8,
+                      width: MediaQuery.of(context).size.width / 10,
                       decoration: BoxDecoration(
                           color: Colors.white10,
                           borderRadius: BorderRadius.circular(10),
@@ -170,7 +177,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                     Container(
                       height: 50,
                       margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width / 8,
+                      width: MediaQuery.of(context).size.width / 10,
                       decoration: BoxDecoration(
                           color: Colors.white10,
                           borderRadius: BorderRadius.circular(10),
@@ -187,7 +194,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                     Container(
                       height: 50,
                       margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width / 8,
+                      width: MediaQuery.of(context).size.width / 10,
                       decoration: BoxDecoration(
                           color: Colors.white10,
                           borderRadius: BorderRadius.circular(10),
@@ -204,7 +211,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                     Container(
                       height: 50,
                       margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width / 8,
+                      width: MediaQuery.of(context).size.width / 10,
                       decoration: BoxDecoration(
                           color: Colors.white10,
                           borderRadius: BorderRadius.circular(10),
@@ -220,6 +227,80 @@ class _VendorAddLotState extends State<VendorAddLot> {
                     ),
                   ],
                 ),
+                SizedBox(
+                  height: 5,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Text(
+                    "Capacity",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                Row(
+                  children: <Widget>[
+                    Container(
+                      width: MediaQuery.of(context).size.width / 2 - 12,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                              hintText: 'No. of Bikes',
+                              border: OutlineInputBorder()),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width / 2 - 12,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                              hintText: 'No. of Cars',
+                              border: OutlineInputBorder()),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Text(
+                    "Parking Fee per Hour",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                Row(
+                  children: <Widget>[
+                    Container(
+                      width: MediaQuery.of(context).size.width / 2 - 12,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                              hintText: 'Bike Fee',
+                              border: OutlineInputBorder()),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width / 2 - 12,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                              hintText: 'Car Fee',
+                              border: OutlineInputBorder()),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 Container(
                   height: 50,
                   margin: EdgeInsets.all(8),
@@ -228,7 +309,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                       color: Colors.green[800],
                       borderRadius: BorderRadius.circular(10)),
                   child: Center(
-                    child: Text('Add Vehicle',
+                    child: Text('Add Lot',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 25,
