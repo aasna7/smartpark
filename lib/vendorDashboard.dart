@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:smartpark/vendorHistory.dart';
+import 'package:smartpark/vendorHome.dart';
+import 'package:smartpark/vendorPackages.dart';
+import 'package:smartpark/vendorProfile.dart';
+import 'package:smartpark/vendorSettings.dart';
 
 class VendorDashboard extends StatefulWidget {
   @override
@@ -7,96 +12,42 @@ class VendorDashboard extends StatefulWidget {
 }
 
 class _VendorDashboardState extends State<VendorDashboard> {
+  int selectedPage = 2;
+  final pageOptions = [Text('Item 1'), Text('Item 2'), Text('Item 3')];
+
   @override
   Widget build(BuildContext context) {
+    final _widgetOptions = [
+      VendorProfile(),
+      VendorHistory(),
+      VendorHome(),
+      VendorPackages(),
+      VendorSettings()
+    ];
+
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text('Vendor Dashboard')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: ListView.builder(
-                  itemCount: 4, // Number of slot of Car
-                  itemBuilder: (BuildContext context, int index) {
-                    index = index + 1;
-                    return InkWell(
-                      onTap: () {
-                        showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          child: new CupertinoAlertDialog(
-                            title: new Column(
-                              children: <Widget>[
-                                new Text("GridView"),
-                                new Icon(
-                                  Icons.favorite,
-                                  color: Colors.red,
-                                ),
-                              ],
-                            ),
-                            content: new Text("Car slot no. $index"),
-                            actions: <Widget>[
-                              new FlatButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: new Text("OK"))
-                            ],
-                          ),
-                        );
-                      },
-                      child: Container(
-                        height: 60,
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 1),
-                        ),
-                        child: Center(child: Text('Car Slot No. $index')),
-                      ),
-                    );
-                  }),
-            ),
-            Expanded(
-              child: ListView.builder(
-                  itemCount: 5, // number of slot for bike
-                  itemBuilder: (BuildContext context, int index) {
-                    index = index + 1;
-                    return InkWell(
-                      onTap: () {
-                        showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          child: new CupertinoAlertDialog(
-                            title: new Column(
-                              children: <Widget>[
-                                new Text("GridView"),
-                                new Icon(
-                                  Icons.favorite,
-                                  color: Colors.red,
-                                ),
-                              ],
-                            ),
-                            content: new Text("Bike slot no. $index"),
-                            actions: <Widget>[
-                              new FlatButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: new Text("OK"))
-                            ],
-                          ),
-                        );
-                      },
-                      child: Container(
-                        height: 40,
-                        decoration: BoxDecoration(border: Border.all(width: 1)),
-                        child: Center(child: Text('Bike Slot No. $index')),
-                      ),
-                    );
-                  }),
-            ),
-          ],
-        ),
+      body: _widgetOptions[selectedPage],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: selectedPage,
+        type: BottomNavigationBarType.fixed,
+        onTap: (int index) {
+          setState(() {
+            selectedPage = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.supervised_user_circle),
+              title: Text('Profile'),
+              backgroundColor: Colors.blue),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.history), title: Text('History')),
+          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.local_offer), title: Text('Packages')),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings), title: Text('Settings')),
+        ],
       ),
     );
   }
