@@ -35,8 +35,8 @@ class _VendorLoginState extends State<VendorLogin> {
             FlatButton(
               child: Text("Ok"),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => VendorAddLot()));
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (context) => VendorAddLot()));
               },
             ),
           ],

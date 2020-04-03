@@ -6,6 +6,15 @@ class VendorAddLot extends StatefulWidget {
 }
 
 class _VendorAddLotState extends State<VendorAddLot> {
+  bool sunday = false;
+  bool monday = false;
+  bool tuesday = false;
+  bool wednesday = false;
+  bool thursday = false;
+  bool friday = false;
+  bool saturday = false;
+
+  List day = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,38 +108,72 @@ class _VendorAddLotState extends State<VendorAddLot> {
                 Wrap(
                   spacing: 15,
                   children: <Widget>[
-                    Container(
-                      height: 50,
-                      margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width / 8,
-                      decoration: BoxDecoration(
-                          color: Colors.white10,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(width: 1)),
-                      child: Center(
-                        child: Text('S',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            )),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          sunday = !sunday;
+                          if (!sunday) {
+                            day.add('S');
+                          } else {
+                            day.remove('S');
+                          }
+                          print(day);
+                        });
+                      },
+                      child: Container(
+                        height: 50,
+                        margin: EdgeInsets.all(8),
+                        width: MediaQuery.of(context).size.width / 8,
+                        decoration: sunday
+                            ? BoxDecoration(
+                                color: Colors.white10,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 1))
+                            : BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 1)),
+                        child: Center(
+                            child: Text('S',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                ))),
                       ),
                     ),
-                    Container(
-                      height: 50,
-                      margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width / 8,
-                      decoration: BoxDecoration(
-                          color: Colors.white10,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(width: 1)),
-                      child: Center(
-                        child: Text('M',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            )),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          monday = !monday;
+                          if (!monday) {
+                            day.add('M');
+                          } else {
+                            day.remove('M');
+                          }
+                          print(day);
+                        });
+                      },
+                      child: Container(
+                        height: 50,
+                        margin: EdgeInsets.all(8),
+                        width: MediaQuery.of(context).size.width / 8,
+                        decoration: monday
+                            ? BoxDecoration(
+                                color: Colors.white10,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 1))
+                            : BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 1)),
+                        child: Center(
+                            child: Text('M',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                ))),
                       ),
                     ),
                     Container(
