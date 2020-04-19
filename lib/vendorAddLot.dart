@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class VendorAddLot extends StatefulWidget {
@@ -6,6 +8,15 @@ class VendorAddLot extends StatefulWidget {
 }
 
 class _VendorAddLotState extends State<VendorAddLot> {
+  TextEditingController lotName = TextEditingController();
+  TextEditingController lotLocation = TextEditingController();
+  TextEditingController lotOpenTime = TextEditingController();
+  TextEditingController lotCloseTime = TextEditingController();
+  TextEditingController lotBikeCapacity = TextEditingController();
+  TextEditingController lotCarCapacity = TextEditingController();
+  TextEditingController lotBikeFee = TextEditingController();
+  TextEditingController lotCarFee = TextEditingController();
+
   bool sunday = false;
   bool monday = false;
   bool tuesday = false;
@@ -17,6 +28,25 @@ class _VendorAddLotState extends State<VendorAddLot> {
   List day = [];
   @override
   Widget build(BuildContext context) {
+    Future<String> addLot() async {
+      final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+      final String userEmail = user.email.toString();
+      Firestore.instance.collection('parkinglot').document(userEmail).setData({
+        'email': userEmail.trim(),
+        'lotName': lotName.text.trim(),
+        'lotLocation': lotLocation.text.trim(),
+        'lotOpenTime': lotOpenTime.text.trim(),
+        'lotCloseTime': lotCloseTime.text.trim(),
+        'lotOpenDays': day,
+        'lotBikeCapacity': lotBikeCapacity.text.trim(),
+        'lotCarCapacity': lotCarCapacity.text.trim(),
+        'lotBikeFee': lotBikeFee.text.trim(),
+        'lotCarFee': lotCarFee.text.trim(),
+      });
+      print(userEmail);
+      return userEmail;
+    }
+
     return Scaffold(
       appBar: AppBar(centerTitle: true, title: Text("Add Lot")),
       body: SingleChildScrollView(
@@ -47,6 +77,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                    controller: lotName,
                     decoration: InputDecoration(
                         hintText: 'Parking Lot Name',
                         border: OutlineInputBorder()),
@@ -58,6 +89,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                    controller: lotLocation,
                     decoration: InputDecoration(
                         hintText: 'Location', border: OutlineInputBorder()),
                   ),
@@ -72,6 +104,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
+                          controller: lotOpenTime,
                           decoration: InputDecoration(
                               hintText: 'Open Time',
                               border: OutlineInputBorder()),
@@ -83,6 +116,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
+                          controller: lotCloseTime,
                           decoration: InputDecoration(
                               hintText: 'Close Time',
                               border: OutlineInputBorder()),
@@ -112,19 +146,20 @@ class _VendorAddLotState extends State<VendorAddLot> {
                       onTap: () {
                         setState(() {
                           sunday = !sunday;
-                          if (!sunday) {
-                            day.add('S');
+                          print(sunday);
+                          if (sunday) {
+                            day.add('sunday');
                           } else {
-                            day.remove('S');
+                            day.remove('sunday');
                           }
                           print(day);
                         });
                       },
                       child: Container(
-                        height: 50,
-                        margin: EdgeInsets.all(7),
-                        width: MediaQuery.of(context).size.width / 10,
-                        decoration: sunday
+                        // height: 50,
+                        margin: EdgeInsets.all(8),
+                        width: MediaQuery.of(context).size.width / 10.05,
+                        decoration: sunday == false
                             ? BoxDecoration(
                                 color: Colors.white10,
                                 borderRadius: BorderRadius.circular(10),
@@ -133,32 +168,35 @@ class _VendorAddLotState extends State<VendorAddLot> {
                                 color: Colors.grey,
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(width: 1)),
-                        child: Center(
-                            child: Text('S',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                ))),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                              child: Text('S',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ))),
+                        ),
                       ),
                     ),
                     InkWell(
                       onTap: () {
                         setState(() {
                           monday = !monday;
-                          if (!monday) {
-                            day.add('M');
+                          print(monday);
+                          if (monday) {
+                            day.add('monday');
                           } else {
-                            day.remove('M');
+                            day.remove('monday');
                           }
                           print(day);
                         });
                       },
                       child: Container(
-                        height: 50,
                         margin: EdgeInsets.all(8),
-                        width: MediaQuery.of(context).size.width / 10,
-                        decoration: monday
+                        width: MediaQuery.of(context).size.width / 10.05,
+                        decoration: monday == false
                             ? BoxDecoration(
                                 color: Colors.white10,
                                 borderRadius: BorderRadius.circular(10),
@@ -167,98 +205,212 @@ class _VendorAddLotState extends State<VendorAddLot> {
                                 color: Colors.grey,
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(width: 1)),
-                        child: Center(
-                            child: Text('M',
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                              child: Text('M',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ))),
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          tuesday = !tuesday;
+                          print(tuesday);
+                          if (tuesday) {
+                            day.add('tuesday');
+                          } else {
+                            day.remove('tuesday');
+                          }
+                          print(day);
+                        });
+                      },
+                      child: Container(
+                        //height: 50,
+                        margin: EdgeInsets.all(8),
+                        width: MediaQuery.of(context).size.width / 10.05,
+                        decoration: tuesday == false
+                            ? BoxDecoration(
+                                color: Colors.white10,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 1))
+                            : BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 1)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Text('T',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
-                                ))),
+                                )),
+                          ),
+                        ),
                       ),
                     ),
-                    Container(
-                      height: 50,
-                      margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width / 10,
-                      decoration: BoxDecoration(
-                          color: Colors.white10,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(width: 1)),
-                      child: Center(
-                        child: Text('T',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            )),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          wednesday = !wednesday;
+                          print(wednesday);
+                          if (wednesday) {
+                            day.add('wednesday');
+                          } else {
+                            day.remove('wednesday');
+                          }
+                          print(day);
+                        });
+                      },
+                      child: Container(
+                        // height: 50,
+                        margin: EdgeInsets.all(8),
+                        width: MediaQuery.of(context).size.width / 10.05,
+                        decoration: wednesday == false
+                            ? BoxDecoration(
+                                color: Colors.white10,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 1))
+                            : BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 1)),
+
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Text('W',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          ),
+                        ),
                       ),
                     ),
-                    Container(
-                      height: 50,
-                      margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width / 10,
-                      decoration: BoxDecoration(
-                          color: Colors.white10,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(width: 1)),
-                      child: Center(
-                        child: Text('W',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            )),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          thursday = !thursday;
+                          print(thursday);
+                          if (thursday) {
+                            day.add('thursday');
+                          } else {
+                            day.remove('thursday');
+                          }
+                          print(day);
+                        });
+                      },
+                      child: Container(
+                        //height: 50,
+                        margin: EdgeInsets.all(8),
+                        width: MediaQuery.of(context).size.width / 10.05,
+                        decoration: thursday == false
+                            ? BoxDecoration(
+                                color: Colors.white10,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 1))
+                            : BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 1)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Text('T',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          ),
+                        ),
                       ),
                     ),
-                    Container(
-                      height: 50,
-                      margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width / 10,
-                      decoration: BoxDecoration(
-                          color: Colors.white10,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(width: 1)),
-                      child: Center(
-                        child: Text('T',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            )),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          friday = !friday;
+                          print(friday);
+                          if (friday) {
+                            day.add('friday');
+                          } else {
+                            day.remove('friday');
+                          }
+                          print(day);
+                        });
+                      },
+                      child: Container(
+                        //height: 50,
+                        margin: EdgeInsets.all(8),
+                        width: MediaQuery.of(context).size.width / 10.05,
+                        decoration: friday == false
+                            ? BoxDecoration(
+                                color: Colors.white10,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 1))
+                            : BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 1)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Text('F',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          ),
+                        ),
                       ),
                     ),
-                    Container(
-                      height: 50,
-                      margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width / 10,
-                      decoration: BoxDecoration(
-                          color: Colors.white10,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(width: 1)),
-                      child: Center(
-                        child: Text('F',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            )),
-                      ),
-                    ),
-                    Container(
-                      height: 50,
-                      margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width / 10,
-                      decoration: BoxDecoration(
-                          color: Colors.white10,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(width: 1)),
-                      child: Center(
-                        child: Text('S',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            )),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          saturday = !saturday;
+                          print(saturday);
+                          if (saturday) {
+                            day.add('saturday');
+                          } else {
+                            day.remove('saturday');
+                          }
+                          print(day);
+                        });
+                      },
+                      child: Container(
+                        //height: 50,
+                        margin: EdgeInsets.all(8),
+                        width: MediaQuery.of(context).size.width / 10.05,
+                        decoration: saturday == false
+                            ? BoxDecoration(
+                                color: Colors.white10,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 1))
+                            : BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 1)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Text('S',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -281,6 +433,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
+                          controller: lotBikeCapacity,
                           decoration: InputDecoration(
                               hintText: 'No. of Bikes',
                               border: OutlineInputBorder()),
@@ -292,6 +445,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
+                          controller: lotCarCapacity,
                           decoration: InputDecoration(
                               hintText: 'No. of Cars',
                               border: OutlineInputBorder()),
@@ -318,6 +472,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
+                          controller: lotBikeFee,
                           decoration: InputDecoration(
                               hintText: 'Bike Fee',
                               border: OutlineInputBorder()),
@@ -329,6 +484,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
+                          controller: lotCarFee,
                           decoration: InputDecoration(
                               hintText: 'Car Fee',
                               border: OutlineInputBorder()),
@@ -337,20 +493,23 @@ class _VendorAddLotState extends State<VendorAddLot> {
                     ),
                   ],
                 ),
-                Container(
-                  height: 50,
-                  margin: EdgeInsets.all(8),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                      color: Colors.green[800],
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Center(
-                    child: Text('Add Lot',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                        )),
+                InkWell(
+                  onTap: addLot,
+                  child: Container(
+                    height: 50,
+                    margin: EdgeInsets.all(8),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        color: Colors.green[800],
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Center(
+                      child: Text('Add Lot',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          )),
+                    ),
                   ),
                 ),
               ],

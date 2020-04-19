@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:smartpark/riderAddVehicle.dart';
+import 'package:smartpark/riderHome.dart';
 import 'package:smartpark/vendorAddLot.dart';
 import 'package:smartpark/vendorDashboard.dart';
+import 'package:smartpark/vendorProfile.dart';
+import 'package:smartpark/welcomeScreen.dart';
 
 //import 'package:smartpark/welcomeScreen.dart';
 
@@ -11,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: VendorAddLot(),
+      home: VendorDashboard(),
     );
   }
 }

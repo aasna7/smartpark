@@ -6,7 +6,11 @@ class RiderAddVehicle extends StatefulWidget {
 }
 
 class _RiderAddVehicleState extends State<RiderAddVehicle> {
-  String dropdownValue = 'Vehicle Type';
+  String dropdownValue = 'Bike';
+
+  TextEditingController vehicleType = TextEditingController();
+  TextEditingController vehicleModel = TextEditingController();
+  TextEditingController vehicleNumber = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -33,34 +37,38 @@ class _RiderAddVehicleState extends State<RiderAddVehicle> {
                   height: 200,
                   width: 200,
                 ),
-                DropdownButton<String>(
-                  value: dropdownValue,
-                  icon: Icon(Icons.arrow_downward),
-                  iconSize: 24,
-                  elevation: 16,
-                  style: TextStyle(color: Colors.deepPurple),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.deepPurpleAccent,
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  margin: EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5.0),
+                    border: Border.all(
+                        color: Colors.grey[600],
+                        style: BorderStyle.solid,
+                        width: 0.80),
                   ),
-                  onChanged: (String newValue) {
-                    setState(() {
-                      dropdownValue = newValue;
-                    });
-                  },
-                  items: <String>['Bike', 'Scooter', 'Car', 'Van']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                        hintText: 'Vehicle Type', border: OutlineInputBorder()),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: dropdownValue,
+                      icon: Icon(Icons.arrow_downward),
+                      iconSize: 20,
+                      elevation: 30,
+                      style: TextStyle(color: Colors.grey[600]),
+                      hint: Text("Vehicle Type"),
+                      onChanged: (String newValue) {
+                        setState(() {
+                          dropdownValue = newValue;
+                        });
+                      },
+                      items: <String>['Bike', 'Scooter', 'Car', 'Van']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
                 SizedBox(
