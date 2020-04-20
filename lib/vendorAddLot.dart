@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class VendorAddLot extends StatefulWidget {
   @override
@@ -34,7 +37,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
       Firestore.instance.collection('parkinglot').document(userEmail).setData({
         'email': userEmail.trim(),
         'lotName': lotName.text.trim(),
-        'lotLocation': lotLocation.text.trim(),
+        //'lotLocation': lotLocation.text.trim(),
         'lotOpenTime': lotOpenTime.text.trim(),
         'lotCloseTime': lotCloseTime.text.trim(),
         'lotOpenDays': day,
@@ -88,10 +91,42 @@ class _VendorAddLotState extends State<VendorAddLot> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: lotLocation,
-                    decoration: InputDecoration(
-                        hintText: 'Location', border: OutlineInputBorder()),
+                  // child: TextFormField(
+                  //   controller: lotLocation,
+                  //   decoration: InputDecoration(
+                  //       hintText: 'Location', border: OutlineInputBorder()),
+                  // ),
+                  child: Text(
+                    "Lot Location",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                SizedBox(
+                  height: 3,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => placePicker()),
+                    );
+                  },
+                  child: Container(
+                    height: 50,
+                    margin: EdgeInsets.only(left: 8),
+                    width: MediaQuery.of(context).size.width / 2,
+                    decoration: BoxDecoration(
+                        color: Colors.grey[600],
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Center(
+                      child: Text('Select Location',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          )),
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -516,6 +551,94 @@ class _VendorAddLotState extends State<VendorAddLot> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class placePicker extends StatefulWidget {
+  @override
+  _placePickerState createState() => _placePickerState();
+}
+
+class _placePickerState extends State<placePicker> {
+  Completer<GoogleMapController> _controller = Completer();
+  MapType type;
+  static final CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
+  Set<Marker> markers;
+
+  @override
+  void initState() {
+    super.initState();
+    type = MapType.hybrid;
+    markers = Set.from([]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      body: Stack(
+        children: <Widget>[
+          GoogleMap(
+            markers: markers,
+            mapType: type,
+            onTap: (position) {
+              Marker mk1 = Marker(
+                markerId: MarkerId('1'),
+                position: position,
+              );
+              setState(() {
+                markers.add(mk1);
+              });
+            },
+            initialCameraPosition: _kGooglePlex,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Row(
+              children: <Widget>[
+                FloatingActionButton(
+                  onPressed: () {
+                    setState(() {
+                      type = type == MapType.hybrid
+                          ? MapType.normal
+                          : MapType.hybrid;
+                    });
+                  },
+                  child: Icon(Icons.map),
+                ),
+                FloatingActionButton(
+                  child: Icon(Icons.zoom_in),
+                  onPressed: () async {
+                    (await _controller.future)
+                        .animateCamera(CameraUpdate.zoomIn());
+                  },
+                ),
+                FloatingActionButton(
+                  child: Icon(Icons.zoom_out),
+                  onPressed: () async {
+                    (await _controller.future)
+                        .animateCamera(CameraUpdate.zoomOut());
+                  },
+                ),
+                FloatingActionButton.extended(
+                  icon: Icon(Icons.location_on),
+                  label: Text("My position"),
+                  onPressed: () {
+                    if (markers.length < 1) print("no marker added");
+                    print(markers.first.position);
+                  },
+                )
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
