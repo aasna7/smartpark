@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +10,28 @@ class VendorHome extends StatefulWidget {
 
 class _VendorHomeState extends State<VendorHome> {
   @override
+  int bikeSlots;
+  int carSlots;
+  void initState() {
+    super.initState();
+    getLots();
+  }
+
+  Future<String> getLots() async {
+    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final String userEmail = user.email.toString();
+    var docRef =
+        Firestore.instance.collection('parkinglot').document(userEmail);
+    docRef.get().then((doc) {
+      bikeSlots = doc.data["lotBikeCapacity"];
+      carSlots = doc.data["lotCarCapacity"];
+      // print(doc.data["lotBikeCapacity"]);
+    });
+    print(bikeSlots);
+    print(userEmail);
+    return userEmail;
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(centerTitle: true, title: Text('Vendor Home')),
@@ -24,7 +48,7 @@ class _VendorHomeState extends State<VendorHome> {
               children: <Widget>[
                 Expanded(
                   child: ListView.builder(
-                      itemCount: 4, // Number of slot of Car
+                      itemCount: carSlots, // Number of slot of Car
                       itemBuilder: (BuildContext context, int index) {
                         index = index + 1;
                         return InkWell(
@@ -65,7 +89,7 @@ class _VendorHomeState extends State<VendorHome> {
                 ),
                 Expanded(
                   child: ListView.builder(
-                      itemCount: 5, // number of slot for bike
+                      itemCount: bikeSlots, // number of slot for bike
                       itemBuilder: (BuildContext context, int index) {
                         index = index + 1;
                         return InkWell(
@@ -107,7 +131,7 @@ class _VendorHomeState extends State<VendorHome> {
             ),
           ),
           Positioned(
-            bottom: 10,
+            bottom: 50,
             left: 16,
             right: 16,
             child: Container(

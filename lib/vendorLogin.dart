@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartpark/vendorAddLot.dart';
@@ -31,6 +32,21 @@ class _VendorLoginState extends State<VendorLogin> {
     return user.uid;
   }
 
+  Future<String> checkAddLots() async {
+    final docRef = await Firestore.instance
+        .collection('parkinglots')
+        .document(email.text)
+        .get();
+    if (docRef == null || !docRef.exists) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => VendorDashboard()));
+    } else {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => VendorAddLot()));
+    }
+    return docRef.documentID;
+  }
+
   void _showLoginSuccessDialog() {
     showDialog(
       context: context,
@@ -41,10 +57,7 @@ class _VendorLoginState extends State<VendorLogin> {
           actions: <Widget>[
             FlatButton(
               child: Text("Ok"),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => VendorAddLot()));
-              },
+              onPressed: checkAddLots,
             ),
           ],
         );
