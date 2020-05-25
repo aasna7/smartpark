@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -12,6 +14,40 @@ class VendorProfile extends StatefulWidget {
 
 class _VendorProfileState extends State<VendorProfile> {
   File _image;
+  String vendorFirstName;
+  String vendorLastName;
+  String vendorEmail;
+  String vendorContact;
+
+  TextEditingController nameForm = TextEditingController();
+  TextEditingController emailForm = TextEditingController();
+  TextEditingController contactForm = TextEditingController();
+
+  void initState() {
+    super.initState();
+    getProfileDetails();
+    nameForm.text = vendorFirstName;
+    print(vendorFirstName);
+  }
+
+  Future<String> getProfileDetails() async {
+    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final String userEmail = user.email.toString();
+    print(userEmail);
+    var docRef = Firestore.instance.collection('users').document(userEmail);
+    // print(docRef);
+    docRef.get().then((doc) {
+      this.setState(() {
+        // vendorFirstName = doc.data["firstName"];
+        // vendorLastName = doc.data["lastName"];
+        // vendorEmail = doc.data["email"];
+        // vendorContact = doc.data["contact"];
+        print("userEmail" + userEmail);
+        print(doc.data["firstName"]);
+      });
+    });
+    return userEmail;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +119,20 @@ class _VendorProfileState extends State<VendorProfile> {
                 ),
                 SizedBox(
                   height: 20.0,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: nameForm,
+                    decoration: InputDecoration(
+                      labelText: 'Vendor Name',
+                      hintText: ' Your Name',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

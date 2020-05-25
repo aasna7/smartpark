@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class VendorAddLot extends StatefulWidget {
@@ -109,7 +110,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => placePicker()),
+                      MaterialPageRoute(builder: (context) => PlacePicker()),
                     );
                   },
                   child: Container(
@@ -556,16 +557,17 @@ class _VendorAddLotState extends State<VendorAddLot> {
   }
 }
 
-class placePicker extends StatefulWidget {
+class PlacePicker extends StatefulWidget {
   @override
-  _placePickerState createState() => _placePickerState();
+  _PlacePickerState createState() => _PlacePickerState();
 }
 
-class _placePickerState extends State<placePicker> {
+class _PlacePickerState extends State<PlacePicker> {
+  static Position _location = Position(latitude: 0.0, longitude: 0.0);
   Completer<GoogleMapController> _controller = Completer();
   MapType type;
   static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
+    target: LatLng(_location.latitude, _location.longitude),
     zoom: 14.4746,
   );
   Set<Marker> markers;
@@ -575,11 +577,22 @@ class _placePickerState extends State<placePicker> {
     super.initState();
     type = MapType.hybrid;
     markers = Set.from([]);
+    _displayCurrentLocation();
+  }
+
+  void _displayCurrentLocation() async {
+    final location = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+    setState(() {
+      _location = location;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      appBar: AppBar(centerTitle: true, title: Text('Select Location')),
       body: Stack(
         children: <Widget>[
           GoogleMap(
@@ -614,6 +627,7 @@ class _placePickerState extends State<placePicker> {
                   child: Icon(Icons.map),
                 ),
                 FloatingActionButton(
+                  heroTag: 1,
                   child: Icon(Icons.zoom_in),
                   onPressed: () async {
                     (await _controller.future)
@@ -621,6 +635,7 @@ class _placePickerState extends State<placePicker> {
                   },
                 ),
                 FloatingActionButton(
+                  heroTag: 2,
                   child: Icon(Icons.zoom_out),
                   onPressed: () async {
                     (await _controller.future)
@@ -628,6 +643,7 @@ class _placePickerState extends State<placePicker> {
                   },
                 ),
                 FloatingActionButton.extended(
+                  heroTag: 3,
                   icon: Icon(Icons.location_on),
                   label: Text("My position"),
                   onPressed: () {

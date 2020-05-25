@@ -13,6 +13,7 @@ class VendorLogin extends StatefulWidget {
 
 class _VendorLoginState extends State<VendorLogin> {
   bool isLoading = false;
+  bool passwordVisible;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   Future<String> login() async {
@@ -30,6 +31,10 @@ class _VendorLoginState extends State<VendorLogin> {
     });
     _showLoginSuccessDialog();
     return user.uid;
+  }
+
+  void initState() {
+    passwordVisible = true;
   }
 
   Future<String> checkAddLots() async {
@@ -99,13 +104,33 @@ class _VendorLoginState extends State<VendorLogin> {
                           hintText: 'Email', border: OutlineInputBorder()),
                     ),
                   ),
-                  SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
+                      keyboardType: TextInputType.text,
                       controller: password,
+                      obscureText:
+                          passwordVisible, //This will obscure text dynamically
                       decoration: InputDecoration(
-                          hintText: 'Password', border: OutlineInputBorder()),
+                        hintText: 'Password',
+                        border: OutlineInputBorder(),
+                        // Here is key idea
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            // Based on passwordVisible state choose the icon
+                            passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Theme.of(context).primaryColorDark,
+                          ),
+                          onPressed: () {
+                            // Update the state i.e. toogle the state of passwordVisible variable
+                            setState(() {
+                              passwordVisible = !passwordVisible;
+                            });
+                          },
+                        ),
+                      ),
                     ),
                   ),
                   SizedBox(

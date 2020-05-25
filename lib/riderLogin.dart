@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartpark/riderAddVehicle.dart';
@@ -11,8 +12,10 @@ class RiderLogin extends StatefulWidget {
 
 class _RiderLoginState extends State<RiderLogin> {
   bool isLoading = false;
+  bool passwordVisible;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
+  TextEditingController testPassword = TextEditingController();
 
   Future<String> login() async {
     print(email.text);
@@ -20,6 +23,9 @@ class _RiderLoginState extends State<RiderLogin> {
     setState(() {
       isLoading = true;
     });
+    var docRef =
+        Firestore.instance.collection('parkinglot').document(email.text).get();
+
     FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: email.text.trim(), password: password.text.trim()))
         .user;
@@ -29,6 +35,10 @@ class _RiderLoginState extends State<RiderLogin> {
     _showLoginSuccessDialog();
 
     return user.uid;
+  }
+
+  void initState() {
+    passwordVisible = true;
   }
 
   void _showLoginSuccessDialog() {
@@ -86,13 +96,36 @@ class _RiderLoginState extends State<RiderLogin> {
                           hintText: 'Email', border: OutlineInputBorder()),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
+                      keyboardType: TextInputType.text,
                       controller: password,
+                      obscureText:
+                          passwordVisible, //This will obscure text dynamically
                       decoration: InputDecoration(
-                          hintText: 'Password', border: OutlineInputBorder()),
+                        hintText: 'Password',
+                        border: OutlineInputBorder(),
+                        // Here is key idea
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            // Based on passwordVisible state choose the icon
+                            passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Theme.of(context).primaryColorDark,
+                          ),
+                          onPressed: () {
+                            // Update the state i.e. toogle the state of passwordVisible variable
+                            setState(() {
+                              passwordVisible = !passwordVisible;
+                            });
+                          },
+                        ),
+                      ),
                     ),
                   ),
                   SizedBox(

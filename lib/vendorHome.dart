@@ -13,6 +13,7 @@ class VendorHome extends StatefulWidget {
 class _VendorHomeState extends State<VendorHome> {
   int bikeSlots = 0;
   int carSlots = 0;
+
   @override
   void initState() {
     super.initState();

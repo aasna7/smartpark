@@ -9,6 +9,7 @@ class RiderRegister extends StatefulWidget {
 }
 
 class _RiderRegisterState extends State<RiderRegister> {
+  bool passwordVisible;
   TextEditingController firstName = TextEditingController();
   TextEditingController lastName = TextEditingController();
   TextEditingController email = TextEditingController();
@@ -26,6 +27,10 @@ class _RiderRegisterState extends State<RiderRegister> {
     _showAccountCreatedDialog();
 
     return user.uid;
+  }
+
+  void initState() {
+    passwordVisible = true;
   }
 
   Future<String> createUserDb() async {
@@ -91,7 +96,7 @@ class _RiderRegisterState extends State<RiderRegister> {
                     Container(
                       margin: EdgeInsets.all(12),
                       height: 60,
-                      width: MediaQuery.of(context).size.width / 2.5,
+                      width: MediaQuery.of(context).size.width / 2.4,
                       child: Padding(
                         padding: const EdgeInsets.all(0),
                         child: TextFormField(
@@ -105,7 +110,7 @@ class _RiderRegisterState extends State<RiderRegister> {
                     Container(
                       margin: EdgeInsets.all(12),
                       height: 60,
-                      width: MediaQuery.of(context).size.width / 2.5,
+                      width: MediaQuery.of(context).size.width / 2.4,
                       child: Padding(
                         padding: const EdgeInsets.all(0),
                         child: TextFormField(
@@ -144,9 +149,30 @@ class _RiderRegisterState extends State<RiderRegister> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                    keyboardType: TextInputType.text,
                     controller: password,
+                    obscureText:
+                        passwordVisible, //This will obscure text dynamically
                     decoration: InputDecoration(
-                        hintText: 'Password', border: OutlineInputBorder()),
+                      hintText: 'Password',
+                      border: OutlineInputBorder(),
+                      // Here is key idea
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          // Based on passwordVisible state choose the icon
+                          passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Theme.of(context).primaryColorDark,
+                        ),
+                        onPressed: () {
+                          // Update the state i.e. toogle the state of passwordVisible variable
+                          setState(() {
+                            passwordVisible = !passwordVisible;
+                          });
+                        },
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(
