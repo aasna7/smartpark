@@ -61,12 +61,7 @@ class _VendorProfileState extends State<VendorProfile> {
                         Container(
                           height: 120,
                           width: MediaQuery.of(context).size.width,
-                          color: Colors.black,
-                          child: Image.network(
-                            snapshot.data['image'],
-                            height: 120,
-                            fit: BoxFit.cover,
-                          ),
+                          color: Colors.pink,
                         ),
                         snapshot.data['image'] == ""
                             ? ClipRRect(
@@ -190,9 +185,12 @@ class _VendorProfileState extends State<VendorProfile> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ProfileEdit(
+                                      lastName: snapshot.data['lastName'],
+                                      location: snapshot.data['location'],
                                       email: snapshot.data['email'],
                                       image: snapshot.data['image'],
                                       firstName: snapshot.data['firstName'],
+                                      contact: snapshot.data['contact'],
                                     )));
                       },
                       child: Text("Edit Profile"),
