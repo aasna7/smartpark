@@ -20,8 +20,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               padding: const EdgeInsets.only(top: 70),
               child: Image.asset(
                 'images/logo.PNG',
-                height: 450,
-                width: 450,
+                height: 200,
+                width: 200,
               ),
             ),
             Row(
