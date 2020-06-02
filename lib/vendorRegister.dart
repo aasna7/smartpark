@@ -101,7 +101,7 @@ class _VendorRegisterState extends State<VendorRegister> {
                     Container(
                       margin: EdgeInsets.all(12),
                       height: 60,
-                      width: MediaQuery.of(context).size.width / 2.4,
+                      width: MediaQuery.of(context).size.width / 2 - 36,
                       child: Padding(
                         padding: const EdgeInsets.all(0),
                         child: TextFormField(
@@ -115,7 +115,7 @@ class _VendorRegisterState extends State<VendorRegister> {
                     Container(
                       margin: EdgeInsets.all(12),
                       height: 60,
-                      width: MediaQuery.of(context).size.width / 2.4,
+                      width: MediaQuery.of(context).size.width / 2 - 36,
                       child: Padding(
                         padding: const EdgeInsets.all(0),
                         child: TextFormField(

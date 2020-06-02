@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -73,58 +75,73 @@ class _VendorLoginState extends State<VendorLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text('Vendor Login')),
-      body: SingleChildScrollView(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Color.fromARGB(0xff, 24, 32, 88),
+      body: SafeArea(
         child: Stack(
+          alignment: Alignment.topCenter,
           children: <Widget>[
             Container(
-              //height:250,
-              margin: EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color.fromRGBO(0, 0, 0, 0.08),
-                      blurRadius: 20.0,
-                    ),
-                  ],
-                  borderRadius: BorderRadius.circular(10)),
+              height: MediaQuery.of(context).size.height / 3,
               child: Column(
                 children: <Widget>[
                   Image.asset(
-                    'images/logo.PNG',
-                    height: 200,
-                    width: 200,
+                    'images/scooter.png',
+                    height: MediaQuery.of(context).size.height / 4,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: email,
-                      decoration: InputDecoration(
-                          hintText: 'Email', border: OutlineInputBorder()),
+                  Text(
+                    "SMART PARK",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height / 3,
+                  left: 16,
+                  right: 16),
+              height: MediaQuery.of(context).size.height / 3,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Text(
+                      "LOGIN",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
+                    TextFormField(
+                      controller: email,
+                      decoration: InputDecoration(labelText: "Email"),
+                    ),
+                    // SizedBox(height: 20),
+                    TextFormField(
                       keyboardType: TextInputType.text,
                       controller: password,
-                      obscureText:
-                          passwordVisible, //This will obscure text dynamically
+                      obscureText: passwordVisible,
                       decoration: InputDecoration(
                         hintText: 'Password',
-                        border: OutlineInputBorder(),
-                        // Here is key idea
                         suffixIcon: IconButton(
                           icon: Icon(
-                            // Based on passwordVisible state choose the icon
                             passwordVisible
                                 ? Icons.visibility
                                 : Icons.visibility_off,
                             color: Theme.of(context).primaryColorDark,
                           ),
                           onPressed: () {
-                            // Update the state i.e. toogle the state of passwordVisible variable
                             setState(() {
                               passwordVisible = !passwordVisible;
                             });
@@ -132,75 +149,63 @@ class _VendorLoginState extends State<VendorLogin> {
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  InkWell(
-                    onTap: login,
-                    child: Container(
-                      height: 50,
-                      margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          color: Colors.blue[800],
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Center(
-                        child: Text('LOGIN',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            )),
-                      ),
-                    ),
-                  ),
-                  Text(
-                    'Dont have an account?',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      // Navigator.push(context, MaterialPageRoute(builder: (context)=>RiderRegister()));
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => VendorRegister()));
-                    },
-                    child: Container(
-                      height: 50,
-                      margin: EdgeInsets.all(8),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          color: Colors.green[800],
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Center(
-                        child: Text('REGISTER',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            )),
-                      ),
-                    ),
-                  ),
-                ],
+                    SizedBox(height: 40),
+                  ],
+                ),
               ),
             ),
-            isLoading
-                ? Positioned.fill(
-                    child: Container(
-                    color: Colors.black.withOpacity(0.5),
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        backgroundColor: Colors.green,
-                      ),
+            Positioned(
+              right: 32,
+              top: MediaQuery.of(context).size.height / 1.5 - 40,
+              child: InkWell(
+                onTap: login,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Container(
+                    height: 80,
+                    width: 80,
+                    color: Colors.red,
+                    child: Icon(
+                      Icons.arrow_forward,
+                      size: 30,
+                      color: Colors.white,
                     ),
-                  ))
-                : Container(),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("New Vendor?",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        )),
+                    SizedBox(width: 10),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => VendorRegister()));
+                      },
+                      child: Text("Sign Up",
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          )),
+                    ),
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
