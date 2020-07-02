@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class ProfileEdit extends StatefulWidget {
+class RiderProfileEdit extends StatefulWidget {
   String image;
   String firstName;
   String lastName;
   String contact;
   String location;
   String email;
-  ProfileEdit(
+  RiderProfileEdit(
       {this.image,
       this.firstName,
       this.lastName,
@@ -17,10 +17,10 @@ class ProfileEdit extends StatefulWidget {
       this.email});
 
   @override
-  _ProfileEditState createState() => _ProfileEditState();
+  _RiderProfileEditState createState() => _RiderProfileEditState();
 }
 
-class _ProfileEditState extends State<ProfileEdit> {
+class _RiderProfileEditState extends State<RiderProfileEdit> {
   TextEditingController firstnameController = TextEditingController();
   TextEditingController lastnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();

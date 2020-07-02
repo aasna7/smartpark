@@ -1,19 +1,19 @@
-import 'dart:async';
-
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:smartpark/lotModel.dart';
 
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-class RiderHome extends StatefulWidget {
+class MapScreen extends StatefulWidget {
   @override
-  _RiderHomeState createState() => _RiderHomeState();
+  _MapScreenState createState() => _MapScreenState();
 }
 
-class _RiderHomeState extends State<RiderHome> {
+class _MapScreenState extends State<MapScreen> {
   GoogleMapController _controller;
 
   List<Marker> allMarkers = [];

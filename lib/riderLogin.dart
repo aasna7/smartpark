@@ -23,8 +23,8 @@ class _RiderLoginState extends State<RiderLogin> {
     setState(() {
       isLoading = true;
     });
-    var docRef =
-        Firestore.instance.collection('parkinglot').document(email.text).get();
+    var docRef = Firestore.instance.collection('users').document(email.text);
+    docRef.get().then((doc) {});
 
     FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: email.text.trim(), password: password.text.trim()))
@@ -65,7 +65,10 @@ class _RiderLoginState extends State<RiderLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text('Rider Login')),
+      appBar: AppBar(
+          centerTitle: true,
+          title: Text('Rider Login'),
+          backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),
       body: SingleChildScrollView(
         child: Stack(
           children: <Widget>[
@@ -138,7 +141,7 @@ class _RiderLoginState extends State<RiderLogin> {
                       margin: EdgeInsets.all(8),
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
-                          color: Colors.blue[800],
+                          color: Color.fromRGBO(70, 151, 157, 1),
                           borderRadius: BorderRadius.circular(10)),
                       child: Center(
                         child: Text('LOGIN',

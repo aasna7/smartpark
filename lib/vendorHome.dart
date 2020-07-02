@@ -36,7 +36,10 @@ class _VendorHomeState extends State<VendorHome> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(centerTitle: true, title: Text('Vendor Home')),
+        appBar: AppBar(
+            centerTitle: true,
+            title: Text('Vendor Home'),
+            backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),
         body: Stack(
           children: <Widget>[
             Padding(
@@ -142,7 +145,7 @@ class _VendorHomeState extends State<VendorHome> {
                       width: MediaQuery.of(context).size.width,
                       height: 60,
                       decoration: BoxDecoration(
-                        color: Colors.pinkAccent,
+                        color: Colors.blue[700],
                       ),
                       child: Center(
                           child: Text(

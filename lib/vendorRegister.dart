@@ -74,7 +74,10 @@ class _VendorRegisterState extends State<VendorRegister> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text('Vendor Register')),
+      appBar: AppBar(
+          centerTitle: true,
+          title: Text('Vendor Register'),
+          backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),
       body: SingleChildScrollView(
         child: Center(
           child: Container(

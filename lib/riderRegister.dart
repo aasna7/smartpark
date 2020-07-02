@@ -1,7 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartpark/riderLogin.dart';
+import 'package:smartpark/riderRegister.dart';
+import 'package:smartpark/vendorLogin.dart';
 
 class RiderRegister extends StatefulWidget {
   @override
@@ -9,20 +11,24 @@ class RiderRegister extends StatefulWidget {
 }
 
 class _RiderRegisterState extends State<RiderRegister> {
+  bool isLoading = false;
   bool passwordVisible;
+  String user;
   TextEditingController firstName = TextEditingController();
   TextEditingController lastName = TextEditingController();
+
   TextEditingController email = TextEditingController();
   TextEditingController contact = TextEditingController();
   TextEditingController password = TextEditingController();
 
   Future<String> register() async {
+    print(email.text);
+    print(password.text);
+
     FirebaseUser user = (await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
                 email: email.text.trim(), password: password.text.trim()))
         .user;
-    return (user.uid);
-    print(user.uid);
     createUserDb();
     _showAccountCreatedDialog();
 
@@ -69,7 +75,10 @@ class _RiderRegisterState extends State<RiderRegister> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text('Rider Register')),
+      appBar: AppBar(
+          centerTitle: true,
+          title: Text('Rider Register'),
+          backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),
       body: SingleChildScrollView(
         child: Center(
           child: Container(
@@ -96,7 +105,7 @@ class _RiderRegisterState extends State<RiderRegister> {
                     Container(
                       margin: EdgeInsets.all(12),
                       height: 60,
-                      width: MediaQuery.of(context).size.width / 2.4,
+                      width: MediaQuery.of(context).size.width / 2 - 36,
                       child: Padding(
                         padding: const EdgeInsets.all(0),
                         child: TextFormField(
@@ -110,7 +119,7 @@ class _RiderRegisterState extends State<RiderRegister> {
                     Container(
                       margin: EdgeInsets.all(12),
                       height: 60,
-                      width: MediaQuery.of(context).size.width / 2.4,
+                      width: MediaQuery.of(context).size.width / 2 - 36,
                       child: Padding(
                         padding: const EdgeInsets.all(0),
                         child: TextFormField(
@@ -123,6 +132,16 @@ class _RiderRegisterState extends State<RiderRegister> {
                     ),
                   ],
                 ),
+                //       Padding(
+                //   padding: const EdgeInsets.all(12.0),
+                //   child: TextFormField(
+                //     decoration: InputDecoration(
+                //       hintText:'First Name',
+                //       border: OutlineInputBorder()
+                //     ),
+                //   ),
+                // ),
+
                 Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: TextFormField(
@@ -137,7 +156,6 @@ class _RiderRegisterState extends State<RiderRegister> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
-                    autovalidate: true,
                     controller: contact,
                     decoration: InputDecoration(
                         hintText: 'Contact', border: OutlineInputBorder()),
@@ -178,6 +196,7 @@ class _RiderRegisterState extends State<RiderRegister> {
                 SizedBox(
                   height: 20,
                 ),
+
                 InkWell(
                   onTap: register,
                   child: Container(

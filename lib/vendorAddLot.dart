@@ -1,12 +1,16 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class VendorAddLot extends StatefulWidget {
+  final LatLng locationCoord;
+  VendorAddLot({this.locationCoord});
   @override
   _VendorAddLotState createState() => _VendorAddLotState();
 }
@@ -20,6 +24,11 @@ class _VendorAddLotState extends State<VendorAddLot> {
   TextEditingController lotCarCapacity = TextEditingController();
   TextEditingController lotBikeFee = TextEditingController();
   TextEditingController lotCarFee = TextEditingController();
+  @override
+  void initState() {
+    convert();
+    super.initState();
+  }
 
   bool sunday = false;
   bool monday = false;
@@ -28,8 +37,26 @@ class _VendorAddLotState extends State<VendorAddLot> {
   bool thursday = false;
   bool friday = false;
   bool saturday = false;
-
+  String country;
+  String postalCode;
+  String locality;
+  String subLocality;
   List day = [];
+  void convert() async {
+    List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(
+        widget.locationCoord.latitude, widget.locationCoord.longitude);
+    setState(() {
+      country = placemark[0].country;
+      postalCode = placemark[0].postalCode;
+      locality = placemark[0].locality;
+      subLocality = placemark[0].subLocality;
+    });
+    print(placemark[0].country);
+    print(placemark[0].position);
+    print(placemark[0].locality);
+    print(placemark[0].subLocality);
+  }
+
   @override
   Widget build(BuildContext context) {
     Future<String> addLot() async {
@@ -46,6 +73,8 @@ class _VendorAddLotState extends State<VendorAddLot> {
         'lotCarCapacity': lotCarCapacity.text.trim(),
         'lotBikeFee': lotBikeFee.text.trim(),
         'lotCarFee': lotCarFee.text.trim(),
+        'lotLocation': new GeoPoint(
+            widget.locationCoord.latitude, widget.locationCoord.longitude)
       });
       print(userEmail);
       return userEmail;
@@ -106,29 +135,33 @@ class _VendorAddLotState extends State<VendorAddLot> {
                 SizedBox(
                   height: 3,
                 ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => PlacePicker()),
-                    );
-                  },
-                  child: Container(
-                    height: 50,
-                    margin: EdgeInsets.only(left: 8),
-                    width: MediaQuery.of(context).size.width / 2,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[600],
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Center(
-                      child: Text('Select Location',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                          )),
+                Row(
+                  children: <Widget>[
+                    Container(
+                      height: 50,
+                      margin: EdgeInsets.only(left: 8),
+                      width: MediaQuery.of(context).size.width / 2,
+                      decoration: BoxDecoration(
+                          color: Colors.grey[600],
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Center(
+                        child: Text(
+                            (country != null &&
+                                    locality != null &&
+                                    postalCode != null)
+                                ? locality +
+                                    ", " +
+                                    country +
+                                    postalCode.toString()
+                                : "",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
                 SizedBox(
                   height: 5,
@@ -563,98 +596,103 @@ class PlacePicker extends StatefulWidget {
 }
 
 class _PlacePickerState extends State<PlacePicker> {
-  static Position _location = Position(latitude: 0.0, longitude: 0.0);
-  Completer<GoogleMapController> _controller = Completer();
-  MapType type;
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(_location.latitude, _location.longitude),
-    zoom: 14.4746,
-  );
-  Set<Marker> markers;
+  GoogleMapController _controller;
 
+  Set<Marker> Markers;
+
+  PageController _pageController;
+  double longitude;
+  double latitude;
+  final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+  int prevPage;
   @override
   void initState() {
     super.initState();
-    type = MapType.hybrid;
-    markers = Set.from([]);
-    _displayCurrentLocation();
+    getLocation();
+    Markers = Set.from([]);
   }
 
-  void _displayCurrentLocation() async {
-    final location = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  void getLocation() async {
+    geolocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+        .then((Position position) {
+      if (mounted)
+        setState(() {
+          longitude = position.longitude;
+          latitude = position.latitude;
+        });
+    });
+  }
 
+  void mapCreated(controller) {
     setState(() {
-      _location = location;
+      _controller = controller;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text('Select Location')),
-      body: Stack(
-        children: <Widget>[
-          GoogleMap(
-            markers: markers,
-            mapType: type,
-            onTap: (position) {
-              Marker mk1 = Marker(
-                markerId: MarkerId('1'),
-                position: position,
-              );
-              setState(() {
-                markers.add(mk1);
-              });
-            },
-            initialCameraPosition: _kGooglePlex,
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Select Lot Location"),
+      ),
+      body: SafeArea(
+        child: Stack(
+          children: <Widget>[
+            (latitude == null && longitude == null)
+                ? Container()
+                : Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                          target: LatLng(latitude, longitude), zoom: 17.0),
+                      markers: Set.from(Markers),
+                      myLocationButtonEnabled: true,
+                      rotateGesturesEnabled: true,
+                      tiltGesturesEnabled: true,
+                      compassEnabled: true,
+                      myLocationEnabled: true,
+                      onMapCreated: mapCreated,
+                      zoomControlsEnabled: true,
+                      zoomGesturesEnabled: true,
+                      mapType: MapType.normal,
+                      onTap: (position) {
+                        Marker mk1 =
+                            Marker(markerId: MarkerId('1'), position: position);
+                        setState(() {
+                          Markers.add(mk1);
+                        });
+                      },
+                    ),
+                  ),
+          ],
+        ),
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(left: 20),
+        child: Align(
+          alignment: Alignment.bottomLeft,
+          child: FloatingActionButton.extended(
+            icon: Icon(Icons.location_on),
+            label: Text("Set Location"),
+            onPressed: () {
+              if (Markers.length < 1) {
+                print("No Markers added");
+              } else {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => VendorAddLot(
+                              locationCoord: LatLng(
+                                  Markers.first.position.latitude,
+                                  Markers.first.position.longitude),
+                            )));
+                print(Markers.first.position);
+              }
             },
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Row(
-              children: <Widget>[
-                FloatingActionButton(
-                  onPressed: () {
-                    setState(() {
-                      type = type == MapType.hybrid
-                          ? MapType.normal
-                          : MapType.hybrid;
-                    });
-                  },
-                  child: Icon(Icons.map),
-                ),
-                FloatingActionButton(
-                  heroTag: 1,
-                  child: Icon(Icons.zoom_in),
-                  onPressed: () async {
-                    (await _controller.future)
-                        .animateCamera(CameraUpdate.zoomIn());
-                  },
-                ),
-                FloatingActionButton(
-                  heroTag: 2,
-                  child: Icon(Icons.zoom_out),
-                  onPressed: () async {
-                    (await _controller.future)
-                        .animateCamera(CameraUpdate.zoomOut());
-                  },
-                ),
-                FloatingActionButton.extended(
-                  heroTag: 3,
-                  icon: Icon(Icons.location_on),
-                  label: Text("My position"),
-                  onPressed: () {
-                    if (markers.length < 1) print("no marker added");
-                    print(markers.first.position);
-                  },
-                )
-              ],
-            ),
-          )
-        ],
+        ),
       ),
     );
   }

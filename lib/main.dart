@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smartpark/riderAddVehicle.dart';
 import 'package:smartpark/riderHome.dart';
 import 'package:smartpark/riderLogin.dart';
+import 'package:smartpark/mapScreen.dart';
 import 'package:smartpark/vendorAddLot.dart';
 import 'package:smartpark/vendorDashboard.dart';
 import 'package:smartpark/vendorProfile.dart';
