@@ -123,7 +123,7 @@ class _VendorProfileState extends State<VendorProfile> {
                         ),
                       ),
                     ),
-                    snapshot.data['location'] == ""
+                    snapshot.data['contact'] == ""
                         ? Container()
                         : Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -187,6 +187,7 @@ class _VendorProfileState extends State<VendorProfile> {
     );
   }
 }
+
 // class VendorProfile extends StatefulWidget {
 //   @override
 //   _VendorProfileState createState() => _VendorProfileState();

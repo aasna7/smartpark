@@ -11,6 +11,26 @@ class _VendorPackagesState extends State<VendorPackages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+            centerTitle: true,
+            title: Text('Packages'),
+            backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),
+        body: Container(
+          color: Colors.grey[400],
+          child: Stack(
+            children: <Widget>[
+              Center(
+                child: Positioned(
+                  top: 30.0,
+                  child: Text(
+                    "No Packages Added",
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
         floatingActionButton: FloatingActionButton(
             onPressed: () {},
             child: Icon(Icons.add),

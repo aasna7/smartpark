@@ -58,11 +58,16 @@ class _RiderProfileState extends State<RiderProfile> {
                           color: Color.fromRGBO(5, 115, 124, 1),
                         ),
                         snapshot.data['image'] == ""
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(80),
-                                child: Image.network(
-                                  'https://i.pinimg.com/originals/83/c0/0f/83c00f59d66869aa22d3bd5f35e26c6d.png',
-                                  height: 120,
+                            ? Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 60.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(80),
+                                    child: Image.network(
+                                      'https://i.pinimg.com/originals/83/c0/0f/83c00f59d66869aa22d3bd5f35e26c6d.png',
+                                      height: 120,
+                                    ),
+                                  ),
                                 ),
                               )
                             : Center(

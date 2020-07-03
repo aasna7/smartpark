@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:smartpark/vendorDashboard.dart';
 
 class VendorAddLot extends StatefulWidget {
   final LatLng locationCoord;
@@ -57,29 +58,51 @@ class _VendorAddLotState extends State<VendorAddLot> {
     print(placemark[0].subLocality);
   }
 
+  Future<String> addLot() async {
+    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final String userEmail = user.email.toString();
+    Firestore.instance.collection('parkinglot').document(userEmail).setData({
+      'email': userEmail.trim(),
+      'lotName': lotName.text.trim(),
+      //'lotLocation': lotLocation.text.trim(),
+      'lotOpenTime': lotOpenTime.text.trim(),
+      'lotCloseTime': lotCloseTime.text.trim(),
+      'lotOpenDays': day,
+      'lotBikeCapacity': lotBikeCapacity.text.trim(),
+      'lotCarCapacity': lotCarCapacity.text.trim(),
+      'lotBikeFee': lotBikeFee.text.trim(),
+      'lotCarFee': lotCarFee.text.trim(),
+      'lotLocation': new GeoPoint(
+          widget.locationCoord.latitude, widget.locationCoord.longitude)
+    });
+    _showSuccessDialog();
+    print(userEmail);
+    return userEmail;
+  }
+
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          content: Text("Lot Added Successfully"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Ok"),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => VendorDashboard()));
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    Future<String> addLot() async {
-      final FirebaseUser user = await FirebaseAuth.instance.currentUser();
-      final String userEmail = user.email.toString();
-      Firestore.instance.collection('parkinglot').document(userEmail).setData({
-        'email': userEmail.trim(),
-        'lotName': lotName.text.trim(),
-        //'lotLocation': lotLocation.text.trim(),
-        'lotOpenTime': lotOpenTime.text.trim(),
-        'lotCloseTime': lotCloseTime.text.trim(),
-        'lotOpenDays': day,
-        'lotBikeCapacity': lotBikeCapacity.text.trim(),
-        'lotCarCapacity': lotCarCapacity.text.trim(),
-        'lotBikeFee': lotBikeFee.text.trim(),
-        'lotCarFee': lotCarFee.text.trim(),
-        'lotLocation': new GeoPoint(
-            widget.locationCoord.latitude, widget.locationCoord.longitude)
-      });
-      print(userEmail);
-      return userEmail;
-    }
-
     return Scaffold(
       appBar: AppBar(centerTitle: true, title: Text("Add Lot")),
       body: SingleChildScrollView(
@@ -598,6 +621,7 @@ class PlacePicker extends StatefulWidget {
 class _PlacePickerState extends State<PlacePicker> {
   GoogleMapController _controller;
 
+  String searchAddr;
   Set<Marker> Markers;
 
   PageController _pageController;
@@ -627,6 +651,15 @@ class _PlacePickerState extends State<PlacePicker> {
   void mapCreated(controller) {
     setState(() {
       _controller = controller;
+    });
+  }
+
+  searchAndNavigate() {
+    Geolocator().placemarkFromAddress(searchAddr).then((result) {
+      _controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+          target:
+              LatLng(result[0].position.latitude, result[0].position.longitude),
+          zoom: 15.0)));
     });
   }
 
@@ -666,6 +699,42 @@ class _PlacePickerState extends State<PlacePicker> {
                       },
                     ),
                   ),
+            Positioned(
+              top: 30.0,
+              right: 15.0,
+              left: 15.0,
+              child: Container(
+                height: 50.0,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: Colors.white),
+                child: TextField(
+                  decoration: InputDecoration(
+                      hintText: "Search Place",
+                      border: InputBorder.none,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: searchAndNavigate,
+                        iconSize: 30.0,
+                      )),
+                  onChanged: (val) {
+                    setState(() {
+                      searchAddr = val;
+                    });
+                  },
+                ),
+              ),
+            )
           ],
         ),
       ),

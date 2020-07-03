@@ -1,5 +1,14 @@
+import 'dart:io';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:smartpark/profileEdit.dart';
 
 class RiderProfileEdit extends StatefulWidget {
   String image;
@@ -21,11 +30,15 @@ class RiderProfileEdit extends StatefulWidget {
 }
 
 class _RiderProfileEditState extends State<RiderProfileEdit> {
+  bool isUploading = false;
+  String imgUrl;
+  File _image;
   TextEditingController firstnameController = TextEditingController();
   TextEditingController lastnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController contactController = TextEditingController();
   TextEditingController locationController = TextEditingController();
+  final databaseReference = Firestore.instance;
 
   @override
   void initState() {
@@ -36,6 +49,84 @@ class _RiderProfileEditState extends State<RiderProfileEdit> {
     emailController.text = widget.email;
     contactController.text = widget.contact;
     locationController.text = widget.location;
+  }
+
+  void chooseMode(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Choose picture from:"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Camera"),
+              onPressed: () {
+                takePicture();
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+                child: Text("Gallery"),
+                onPressed: () {
+                  getImage();
+                  Navigator.of(context).pop();
+                }),
+          ],
+        );
+      },
+    );
+  }
+
+  Future uploadPic(BuildContext context) async {
+    String fileName = basename(_image.path);
+    StorageReference firebaseStorageRef =
+        FirebaseStorage.instance.ref().child(fileName);
+    StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
+    var downUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
+    var url = downUrl.toString();
+    setState(() {
+      print("Profile Picture uploaded");
+      imgUrl = url;
+    });
+    print("Download URL :$url");
+    updateProfile(context);
+    return url;
+  }
+
+  Future<void> updateProfile(BuildContext context) async {
+    Firestore.instance.collection('users').document(widget.email).updateData({
+      "firstName": firstnameController.text.trim(),
+      "lastName": lastnameController.text.trim(),
+      "contact": contactController.text.trim(),
+      "email": emailController.text.trim(),
+      "location": locationController.text.trim()
+    }).then((result) {
+      print("Updated!");
+    }).catchError((onError) {
+      print("onError");
+    });
+  }
+
+  Future takePicture() async {
+    print('Picker is called');
+    File image = await ImagePicker.pickImage(source: ImageSource.camera);
+//    File img = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      _image = image;
+      setState(() {});
+    }
+  }
+
+  Future getImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (image != null) {
+        _image = image;
+      }
+
+      print('Image Path $_image');
+    });
   }
 
   Widget build(BuildContext context) {
@@ -53,33 +144,47 @@ class _RiderProfileEditState extends State<RiderProfileEdit> {
                 color: Color.fromRGBO(5, 115, 124, 1),
               ),
               widget.image == ""
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(80),
-                      child: Image.network(
-                        'https://i.pinimg.com/originals/83/c0/0f/83c00f59d66869aa22d3bd5f35e26c6d.png',
-                        height: 120,
-                      ),
-                    )
-                  : Center(
+                  ? Center(
                       child: Padding(
                         padding: const EdgeInsets.only(top: 60.0),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(80),
                           child: Image.network(
-                            widget.image,
+                            'https://i.pinimg.com/originals/83/c0/0f/83c00f59d66869aa22d3bd5f35e26c6d.png',
                             height: 120,
                           ),
                         ),
                       ),
+                    )
+                  : Center(
+                      child: Padding(
+                          padding: const EdgeInsets.only(top: 60.0),
+                          child: (_image == null)
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(80),
+                                  child: Image.network(
+                                    widget.image,
+                                    height: 120,
+                                    width: 120,
+                                  ),
+                                )
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(80),
+                                  child: Image.file(_image,
+                                      height: 120, width: 120),
+                                )),
                     ),
-              InkWell(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 100.0, left: 120),
-                    child: Icon(
-                      Icons.add_a_photo,
-                    ),
-                  ),
+              Positioned(
+                top: 50,
+                bottom: 0,
+                left: 140,
+                right: 0,
+                child: IconButton(
+                  icon: Icon(Icons.add_a_photo),
+                  color: Colors.black,
+                  onPressed: () {
+                    chooseMode(context);
+                  },
                 ),
               ),
             ],
@@ -132,20 +237,6 @@ class _RiderProfileEditState extends State<RiderProfileEdit> {
           RaisedButton(
             onPressed: () {
               print(widget.contact);
-              Firestore.instance
-                  .collection('users')
-                  .document(widget.email)
-                  .updateData({
-                "firstName": firstnameController.text.trim(),
-                "lastName": lastnameController.text.trim(),
-                "contact": contactController.text.trim(),
-                "email": emailController.text.trim(),
-                "location": locationController.text.trim()
-              }).then((result) {
-                print("Updated!");
-              }).catchError((onError) {
-                print("onError");
-              });
             },
             child: Text("Update"),
           )

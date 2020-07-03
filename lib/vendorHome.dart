@@ -37,6 +37,7 @@ class _VendorHomeState extends State<VendorHome> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+            automaticallyImplyLeading: false,
             centerTitle: true,
             title: Text('Vendor Home'),
             backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),

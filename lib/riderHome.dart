@@ -200,7 +200,7 @@ class _RiderHomeState extends State<RiderHome> {
                     onMapCreated: mapCreated,
                     zoomControlsEnabled: true,
                     zoomGesturesEnabled: true,
-                    mapType: MapType.hybrid,
+                    mapType: MapType.normal,
                   ),
                 ),
           Positioned(

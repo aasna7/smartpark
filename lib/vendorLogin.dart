@@ -16,6 +16,7 @@ class VendorLogin extends StatefulWidget {
 class _VendorLoginState extends State<VendorLogin> {
   bool isLoading = false;
   bool passwordVisible;
+  bool existance = false;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   Future<String> login() async {
@@ -31,27 +32,51 @@ class _VendorLoginState extends State<VendorLogin> {
     setState(() {
       isLoading = false;
     });
+    final docRef = await Firestore.instance
+        .collection('parkinglot')
+        .document(email.text)
+        .get();
+    if (docRef.exists) {
+      setState(() {
+        existance = true;
+      });
+    } else {
+      setState(() {
+        existance = false;
+      });
+    }
+//     docRef.get().then((doc) {
+//       if (email.text==doc.data['email']){
+//  setState(() {
+//         // if (email.text==doc.data['email']){
+//         //   existance =true;
+//         // }
+//         existance = true;
+//         print(existance);
+//         print(doc.data["email"]);
+//       });
+//       }
+
+//     }
+
     _showLoginSuccessDialog();
     return user.uid;
   }
 
   void initState() {
+    super.initState();
     passwordVisible = true;
   }
 
   Future<String> checkAddLots() async {
-    final docRef = await Firestore.instance
-        .collection('parkinglot')
-        .document(email.text)
-        .get();
-    if (docRef == null || !docRef.exists) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => PlacePicker()));
-    } else {
+    print(existance);
+    if (existance == true) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => VendorDashboard()));
+    } else if (existance == false) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => PlacePicker()));
     }
-    return docRef.documentID;
   }
 
   void _showLoginSuccessDialog() {
@@ -151,7 +176,7 @@ class _VendorLoginState extends State<VendorLogin> {
                       margin: EdgeInsets.all(8),
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
-                          color: Colors.blue[800],
+                          color: Color.fromRGBO(70, 151, 157, 1),
                           borderRadius: BorderRadius.circular(10)),
                       child: Center(
                         child: Text('LOGIN',

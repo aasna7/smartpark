@@ -13,6 +13,7 @@ class RiderLogin extends StatefulWidget {
 class _RiderLoginState extends State<RiderLogin> {
   bool isLoading = false;
   bool passwordVisible;
+  bool existance = false;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController testPassword = TextEditingController();
@@ -32,6 +33,16 @@ class _RiderLoginState extends State<RiderLogin> {
     setState(() {
       isLoading = false;
     });
+    final docRefE = await Firestore.instance
+        .collection('vehicledetails')
+        .document(email.text);
+    docRefE.get().then((doc) {
+      setState(() {
+        existance = true;
+        print(existance);
+        print(doc.data["email"]);
+      });
+    });
     _showLoginSuccessDialog();
 
     return user.uid;
@@ -39,6 +50,17 @@ class _RiderLoginState extends State<RiderLogin> {
 
   void initState() {
     passwordVisible = true;
+  }
+
+  Future<String> checkAddLots() async {
+    print(existance);
+    if (existance == true) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => RiderDashboard()));
+    } else if (existance == false) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => RiderAddVehicle()));
+    }
   }
 
   void _showLoginSuccessDialog() {
@@ -49,13 +71,7 @@ class _RiderLoginState extends State<RiderLogin> {
         return AlertDialog(
           content: Text("Login Success"),
           actions: <Widget>[
-            FlatButton(
-              child: Text("Ok"),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => RiderAddVehicle()));
-              },
-            ),
+            FlatButton(child: Text("Ok"), onPressed: checkAddLots),
           ],
         );
       },

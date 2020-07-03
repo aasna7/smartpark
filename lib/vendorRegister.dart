@@ -44,7 +44,10 @@ class _VendorRegisterState extends State<VendorRegister> {
       'firstName': firstName.text.trim(),
       'lastName': lastName.text.trim(),
       'contact': contact.text.trim(),
-      'userType': "vendor"
+      'userType': "vendor",
+      'image':
+          "https://i.pinimg.com/originals/83/c0/0f/83c00f59d66869aa22d3bd5f35e26c6d.png",
+      'location': ""
     });
     return email.text;
   }

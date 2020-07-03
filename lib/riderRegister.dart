@@ -45,7 +45,10 @@ class _RiderRegisterState extends State<RiderRegister> {
       'firstName': firstName.text.trim(),
       'lastName': lastName.text.trim(),
       'contact': contact.text.trim(),
-      'userType': "rider"
+      'userType': "rider",
+      'image':
+          "https://i.pinimg.com/originals/83/c0/0f/83c00f59d66869aa22d3bd5f35e26c6d.png",
+      'location': ""
     });
     return email.text;
   }
