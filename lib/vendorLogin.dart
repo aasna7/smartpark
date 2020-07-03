@@ -38,10 +38,12 @@ class _VendorLoginState extends State<VendorLogin> {
         .get();
     if (docRef.exists) {
       setState(() {
+        print(email.text);
         existance = true;
       });
     } else {
       setState(() {
+        print(email.text);
         existance = false;
       });
     }
