@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:double_back_to_close/double_back_to_close.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,8 @@ class _VendorHomeState extends State<VendorHome> {
             centerTitle: true,
             title: Text('Vendor Home'),
             backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),
-        body: Stack(
+        body: DoubleBack(
+            child: Stack(
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(
@@ -160,6 +162,6 @@ class _VendorHomeState extends State<VendorHome> {
                   )
                 : Container()
           ],
-        ));
+        )));
   }
 }

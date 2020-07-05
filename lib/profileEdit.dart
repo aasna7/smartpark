@@ -1,14 +1,9 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:smartpark/profileEdit.dart';
 
 class ProfileEdit extends StatefulWidget {
   String image;
@@ -77,7 +72,7 @@ class _ProfileEditState extends State<ProfileEdit> {
     );
   }
 
-  Future uploadPic() async {
+  Future<String> uploadPic() async {
     String fileName = basename(_image.path);
     StorageReference firebaseStorageRef =
         FirebaseStorage.instance.ref().child(fileName);
@@ -93,7 +88,7 @@ class _ProfileEditState extends State<ProfileEdit> {
     return url;
   }
 
-  Future<void> updateProfile() async {
+  Future<String> updateProfile() async {
     uploadPic();
     Firestore.instance.collection('users').document(widget.email).updateData({
       "firstName": firstnameController.text.trim(),
@@ -101,12 +96,17 @@ class _ProfileEditState extends State<ProfileEdit> {
       "contact": contactController.text.trim(),
       "email": emailController.text.trim(),
       "location": locationController.text.trim(),
-      "image": imgUrl
+      (imgUrl == null)
+          ? "image"
+          : "https://i.pinimg.com/originals/83/c0/0f/83c00f59d66869aa22d3bd5f35e26c6d.png": {
+        "image": imgUrl
+      }
     }).then((result) {
-      print("Updated!");
+      print("Updated");
     }).catchError((onError) {
       print("onError");
     });
+    return (widget.email);
   }
 
   Future takePicture() async {
@@ -233,7 +233,9 @@ class _ProfileEditState extends State<ProfileEdit> {
           ),
           RaisedButton(
             onPressed: updateProfile,
-            child: Text("Update"),
+            child: Text(
+              "Update",
+            ),
           )
         ],
       ),

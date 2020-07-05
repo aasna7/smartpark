@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:smartpark/lotModel.dart';
@@ -60,9 +61,9 @@ class _RiderHomeState extends State<RiderHome> {
               markerId: MarkerId(lot.data["markerId"]),
               draggable: true,
               infoWindow: InfoWindow(
-                  title: lot.data["LotName"], snippet: lot.data['LotName']),
-              position: LatLng(lot.data["LocationCoord"].latitude,
-                  lot.data["LocationCoord"].longitude)));
+                  title: lot.data["lotName"], snippet: lot.data['lotName']),
+              position: LatLng(lot.data["lotLocation"].latitude,
+                  lot.data["lotLocation"].longitude)));
         });
       });
     });
@@ -119,18 +120,28 @@ class _RiderHomeState extends State<RiderHome> {
             child: Row(
               children: [
                 Flexible(
-                  child: Container(
-                    // height: 100,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RiderBookingPage(
+                                    email: lots[index].email,
+                                  )));
+                    },
+                    child: Container(
+                      // height: 100,
 
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10.0),
-                          topLeft: Radius.circular(10.0)),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child:
-                          CachedNetworkImage(imageUrl: lots[index].thumbNail),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10.0),
+                            topLeft: Radius.circular(10.0)),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child:
+                            CachedNetworkImage(imageUrl: lots[index].userImage),
+                      ),
                     ),
                   ),
                 ),
@@ -144,7 +155,12 @@ class _RiderHomeState extends State<RiderHome> {
                           style: TextStyle(
                               fontSize: 12.5, fontWeight: FontWeight.bold),
                         ),
-                        Text(lots[index].vacentSlot)
+                        Text("Car Slots:" + lots[index].carSlots),
+                        Text("Bike Slots: " + lots[index].bikeSlots),
+                        Text("Opening Time: " +
+                            lots[index].openTime +
+                            "-" +
+                            lots[index].closeTime)
                       ]),
                 ),
               ],
@@ -180,45 +196,224 @@ class _RiderHomeState extends State<RiderHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+            centerTitle: true,
+            title: Text("Rider Home"),
+            backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),
         body: SafeArea(
-      child: Stack(
-        children: <Widget>[
-          (latitude == null && longitude == null)
-              ? Container()
-              : Container(
-                  height: MediaQuery.of(context).size.height,
+          child: Stack(
+            children: <Widget>[
+              (latitude == null && longitude == null)
+                  ? Container()
+                  : Container(
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      child: GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                            target: LatLng(latitude, longitude), zoom: 17.0),
+                        markers: Set.from(allMarkers),
+                        myLocationButtonEnabled: true,
+                        rotateGesturesEnabled: true,
+                        tiltGesturesEnabled: true,
+                        compassEnabled: true,
+                        myLocationEnabled: true,
+                        onMapCreated: mapCreated,
+                        zoomControlsEnabled: true,
+                        zoomGesturesEnabled: true,
+                        mapType: MapType.normal,
+                      ),
+                    ),
+              Positioned(
+                top: 50,
+                child: Container(
+                  height: 120.0,
                   width: MediaQuery.of(context).size.width,
-                  child: GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                        target: LatLng(latitude, longitude), zoom: 17.0),
-                    markers: Set.from(allMarkers),
-                    myLocationButtonEnabled: true,
-                    rotateGesturesEnabled: true,
-                    tiltGesturesEnabled: true,
-                    compassEnabled: true,
-                    myLocationEnabled: true,
-                    onMapCreated: mapCreated,
-                    zoomControlsEnabled: true,
-                    zoomGesturesEnabled: true,
-                    mapType: MapType.normal,
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: lots.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _lotList(index);
+                    },
                   ),
                 ),
-          Positioned(
-            top: 50,
-            child: Container(
-              height: 120.0,
-              width: MediaQuery.of(context).size.width,
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: lots.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return _lotList(index);
-                },
+              ),
+            ],
+          ),
+        ));
+  }
+}
+
+class RiderBookingPage extends StatefulWidget {
+  String email;
+  RiderBookingPage({this.email});
+  @override
+  _RiderBookingPageState createState() => _RiderBookingPageState();
+}
+
+class _RiderBookingPageState extends State<RiderBookingPage> {
+  TextEditingController reserveTime = TextEditingController();
+  int bikeSlots = 0;
+  int carSlots = 0;
+
+  void initState() {
+    super.initState();
+    getLots();
+  }
+
+  Future<String> getLots() async {
+    var docRef =
+        Firestore.instance.collection('parkinglot').document(widget.email);
+    docRef.get().then((doc) {
+      this.setState(() {
+        bikeSlots = int.parse(doc.data["lotBikeCapacity"]);
+        carSlots = int.parse(doc.data["lotCarCapacity"]);
+      });
+    });
+    return widget.email;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("Book Slots"),
+        ),
+        body: Stack(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(
+                bottom: 76,
+                left: 16,
+                right: 16,
+                top: 16,
+              ),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: ListView.builder(
+                        itemCount: carSlots, // Number of slot of Car
+                        itemBuilder: (BuildContext context, int index) {
+                          index = index + 1;
+                          return InkWell(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      content: Stack(
+                                        overflow: Overflow.visible,
+                                        children: <Widget>[
+                                          Positioned(
+                                            right: -40.0,
+                                            height: 100,
+                                            top: -40.0,
+                                            child: InkResponse(
+                                              onTap: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: CircleAvatar(
+                                                child: Icon(Icons.close),
+                                                backgroundColor: Colors.red,
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: TextFormField(
+                                              controller: reserveTime,
+                                              decoration: InputDecoration(
+                                                  hintText: 'Reserve Time',
+                                                  border: OutlineInputBorder()),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          InkWell(
+                                            onTap: () {},
+                                            child: Container(
+                                              height: 50,
+                                              margin: EdgeInsets.all(8),
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.green[800],
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                              child: Center(
+                                                child: Text('Book',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 25,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    )),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  });
+                            },
+                            child: Container(
+                              height: 100,
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 1),
+                              ),
+                              child: Center(child: Text('Car Slot No. $index')),
+                            ),
+                          );
+                        }),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                        itemCount: bikeSlots, // number of slot for bike
+                        itemBuilder: (BuildContext context, int index) {
+                          index = index + 1;
+                          return InkWell(
+                            onTap: () {
+                              showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                child: new CupertinoAlertDialog(
+                                  title: new Column(
+                                    children: <Widget>[
+                                      new Text("GridView"),
+                                      new Icon(
+                                        Icons.favorite,
+                                        color: Colors.red,
+                                      ),
+                                    ],
+                                  ),
+                                  content: new Text("Bike slot no. $index"),
+                                  actions: <Widget>[
+                                    new FlatButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: new Text("OK"))
+                                  ],
+                                ),
+                              );
+                            },
+                            child: Container(
+                              height: 80,
+                              decoration:
+                                  BoxDecoration(border: Border.all(width: 1)),
+                              child:
+                                  Center(child: Text('Bike Slot No. $index')),
+                            ),
+                          );
+                        }),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
-      ),
-    ));
+          ],
+        ));
   }
 }

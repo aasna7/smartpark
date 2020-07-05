@@ -22,47 +22,43 @@ class _VendorLoginState extends State<VendorLogin> {
   Future<String> login() async {
     print(email.text);
     print(password.text);
-    setState(() {
-      isLoading = true;
-    });
-
-    FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: email.text.trim(), password: password.text.trim()))
-        .user;
-    setState(() {
-      isLoading = false;
-    });
-    final docRef = await Firestore.instance
-        .collection('parkinglot')
-        .document(email.text)
-        .get();
-    if (docRef.exists) {
+    try {
       setState(() {
-        print(email.text);
-        existance = true;
+        isLoading = true;
       });
-    } else {
+
+      FirebaseUser user = (await FirebaseAuth.instance
+              .signInWithEmailAndPassword(
+                  email: email.text.trim(), password: password.text.trim()))
+          .user;
+      final docRef = await Firestore.instance
+          .collection('parkinglot')
+          .document(email.text)
+          .get();
+      if (docRef.documentID == email.text) {
+        setState(() {
+          print(email.text);
+          existance = true;
+        });
+      } else {
+        setState(() {
+          print(email.text);
+          existance = false;
+        });
+      }
+
       setState(() {
-        print(email.text);
-        existance = false;
+        isLoading = false;
+      });
+      _showLoginSuccessDialog();
+      return user.uid;
+    } catch (e) {
+      print(e.message);
+
+      setState(() {
+        isLoading = false;
       });
     }
-//     docRef.get().then((doc) {
-//       if (email.text==doc.data['email']){
-//  setState(() {
-//         // if (email.text==doc.data['email']){
-//         //   existance =true;
-//         // }
-//         existance = true;
-//         print(existance);
-//         print(doc.data["email"]);
-//       });
-//       }
-
-//     }
-
-    _showLoginSuccessDialog();
-    return user.uid;
   }
 
   void initState() {
@@ -70,14 +66,16 @@ class _VendorLoginState extends State<VendorLogin> {
     passwordVisible = true;
   }
 
-  Future<String> checkAddLots() async {
+  void checkAddLots() async {
     print(existance);
-    if (existance == true) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => VendorDashboard()));
-    } else if (existance == false) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => PlacePicker()));
+    if (existance) {
+      print(existance);
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          '/VendorDashboard', (Route<dynamic> route) => false);
+    } else {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          '/PlacePicker', (Route<dynamic> route) => false);
+      print(existance);
     }
   }
 
@@ -90,9 +88,11 @@ class _VendorLoginState extends State<VendorLogin> {
           content: Text("Login Success"),
           actions: <Widget>[
             FlatButton(
-              child: Text("Ok"),
-              onPressed: checkAddLots,
-            ),
+                child: Text("Ok"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  checkAddLots();
+                }),
           ],
         );
       },
