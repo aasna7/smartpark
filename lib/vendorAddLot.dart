@@ -42,6 +42,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
   String postalCode;
   String locality;
   String subLocality;
+  String userImage;
   List day = [];
   List bikeCapacity = [];
 
@@ -69,7 +70,6 @@ class _VendorAddLotState extends State<VendorAddLot> {
     Firestore.instance.collection('parkinglot').document(userEmail).setData({
       'email': userEmail.trim(),
       'lotName': lotName.text.trim(),
-      //'lotLocation': lotLocation.text.trim(),
       'lotOpenTime': lotOpenTime.text.trim(),
       'lotCloseTime': lotCloseTime.text.trim(),
       'lotOpenDays': day,
@@ -78,7 +78,10 @@ class _VendorAddLotState extends State<VendorAddLot> {
       'lotBikeFee': lotBikeFee.text.trim(),
       'lotCarFee': lotCarFee.text.trim(),
       'lotLocation': new GeoPoint(
-          widget.locationCoord.latitude, widget.locationCoord.longitude)
+          widget.locationCoord.latitude, widget.locationCoord.longitude),
+      'markerId': "1",
+      'userImage':
+          "https://us.123rf.com/450wm/djvstock/djvstock1712/djvstock171211649/92441351-stock-vector-parking-lot-with-parked-cars-colorful-design-vector-illustration.jpg?ver=6"
     });
     _showSuccessDialog();
     print(userEmail);

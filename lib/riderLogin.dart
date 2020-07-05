@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:smartpark/riderAddVehicle.dart';
-import 'package:smartpark/riderDashboard.dart';
-import 'package:smartpark/riderRegister.dart';
+import 'package:smartpark/vendorAddLot.dart';
+import 'package:smartpark/vendorRegister.dart';
+
+import 'vendorDashboard.dart';
 
 class RiderLogin extends StatefulWidget {
   @override
@@ -16,50 +19,63 @@ class _RiderLoginState extends State<RiderLogin> {
   bool existance = false;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
-  TextEditingController testPassword = TextEditingController();
-
   Future<String> login() async {
     print(email.text);
     print(password.text);
-    setState(() {
-      isLoading = true;
-    });
-    var docRef = Firestore.instance.collection('users').document(email.text);
-    docRef.get().then((doc) {});
-
-    FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: email.text.trim(), password: password.text.trim()))
-        .user;
-    setState(() {
-      isLoading = false;
-    });
-    final docRefE = await Firestore.instance
-        .collection('vehicledetails')
-        .document(email.text);
-    docRefE.get().then((doc) {
+    try {
       setState(() {
-        existance = true;
-        print(existance);
-        print(doc.data["email"]);
+        isLoading = true;
       });
-    });
-    _showLoginSuccessDialog();
 
-    return user.uid;
+      FirebaseUser user = (await FirebaseAuth.instance
+              .signInWithEmailAndPassword(
+                  email: email.text.trim(), password: password.text.trim()))
+          .user;
+      final docRef = await Firestore.instance
+          .collection('vehicledetails')
+          .document(email.text)
+          .get();
+      if (docRef.data['email'] == email.text) {
+        setState(() {
+          print(email.text);
+          existance = true;
+        });
+      } else {
+        setState(() {
+          print(email.text);
+          existance = false;
+        });
+      }
+
+      setState(() {
+        isLoading = false;
+      });
+      _showLoginSuccessDialog();
+      return user.uid;
+    } catch (e) {
+      print(e.message);
+
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void initState() {
+    super.initState();
     passwordVisible = true;
   }
 
-  Future<String> checkAddLots() async {
+  void checkAddLots() async {
     print(existance);
-    if (existance == true) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => RiderDashboard()));
-    } else if (existance == false) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => RiderAddVehicle()));
+    if (existance) {
+      print(existance);
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          '/RiderDashboard', (Route<dynamic> route) => false);
+    } else {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          '/RiderAddVehicle', (Route<dynamic> route) => false);
+      print(existance);
     }
   }
 
@@ -71,7 +87,12 @@ class _RiderLoginState extends State<RiderLogin> {
         return AlertDialog(
           content: Text("Login Success"),
           actions: <Widget>[
-            FlatButton(child: Text("Ok"), onPressed: checkAddLots),
+            FlatButton(
+                child: Text("Ok"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  checkAddLots();
+                }),
           ],
         );
       },
@@ -182,7 +203,7 @@ class _RiderLoginState extends State<RiderLogin> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => RiderRegister()));
+                              builder: (context) => VendorRegister()));
                     },
                     child: Container(
                       height: 50,
