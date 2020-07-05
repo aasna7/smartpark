@@ -13,11 +13,13 @@ class VendorHome extends StatefulWidget {
 class _VendorHomeState extends State<VendorHome> {
   int bikeSlots = 0;
   int carSlots = 0;
+  List capacityOfBike = [];
 
   @override
   void initState() {
     super.initState();
     getLots();
+    // print(""+capacityOfBike);
   }
 
   Future<String> getLots() async {
@@ -26,11 +28,15 @@ class _VendorHomeState extends State<VendorHome> {
     var docRef =
         Firestore.instance.collection('parkinglot').document(userEmail);
     docRef.get().then((doc) {
+      capacityOfBike = doc.data["lotBikeCapacity"];
+      print(capacityOfBike);
       this.setState(() {
-        bikeSlots = int.parse(doc.data["lotBikeCapacity"]);
+        // capacityOfBike.add(doc.data["lotBikeCapacity"][0]);
+        bikeSlots = doc.data["lotBikeCapacity"].length;
         carSlots = int.parse(doc.data["lotCarCapacity"]);
       });
     });
+    // print("capacity of bike" + capacityOfBike[0]);
     return userEmail;
   }
 
@@ -95,9 +101,10 @@ class _VendorHomeState extends State<VendorHome> {
                   ),
                   Expanded(
                     child: ListView.builder(
-                        itemCount: bikeSlots, // number of slot for bike
+                        itemCount:
+                            capacityOfBike.length, // number of slot for bike
                         itemBuilder: (BuildContext context, int index) {
-                          index = index + 1;
+                          int number = index + 1;
                           return InkWell(
                             onTap: () {
                               showDialog(
@@ -106,18 +113,22 @@ class _VendorHomeState extends State<VendorHome> {
                                 child: new CupertinoAlertDialog(
                                   title: new Column(
                                     children: <Widget>[
-                                      new Text("GridView"),
+                                      new Text(
+                                          "Do you want to book this slot?"),
                                       new Icon(
                                         Icons.favorite,
                                         color: Colors.red,
                                       ),
                                     ],
                                   ),
-                                  content: new Text("Bike slot no. $index"),
+                                  content: new Text("Bike slot no. $number"),
                                   actions: <Widget>[
                                     new FlatButton(
                                         onPressed: () {
                                           Navigator.of(context).pop();
+                                          print("You have selected " +
+                                              capacityOfBike[index]
+                                                  ["slotName"]);
                                         },
                                         child: new Text("OK"))
                                   ],
@@ -127,9 +138,16 @@ class _VendorHomeState extends State<VendorHome> {
                             child: Container(
                               height: 80,
                               decoration:
-                                  BoxDecoration(border: Border.all(width: 1)),
-                              child:
-                                  Center(child: Text('Bike Slot No. $index')),
+                                  capacityOfBike[index]["available"] == "true"
+                                      ? BoxDecoration(
+                                          border: Border.all(width: 1),
+                                          color: Colors.green)
+                                      : BoxDecoration(
+                                          border: Border.all(width: 1),
+                                          color: Colors.red),
+                              child: Center(
+                                  child:
+                                      Text(capacityOfBike[index]["slotName"])),
                             ),
                           );
                         }),

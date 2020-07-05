@@ -43,6 +43,8 @@ class _VendorAddLotState extends State<VendorAddLot> {
   String locality;
   String subLocality;
   List day = [];
+  List bikeCapacity = [];
+
   void convert() async {
     List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(
         widget.locationCoord.latitude, widget.locationCoord.longitude);
@@ -61,6 +63,9 @@ class _VendorAddLotState extends State<VendorAddLot> {
   Future<String> addLot() async {
     final FirebaseUser user = await FirebaseAuth.instance.currentUser();
     final String userEmail = user.email.toString();
+    for (var i = 1; i <= int.parse(lotBikeCapacity.text); i++) {
+      bikeCapacity.add({"slotName": "B" + i.toString(), "available": "true"});
+    }
     Firestore.instance.collection('parkinglot').document(userEmail).setData({
       'email': userEmail.trim(),
       'lotName': lotName.text.trim(),
@@ -68,7 +73,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
       'lotOpenTime': lotOpenTime.text.trim(),
       'lotCloseTime': lotCloseTime.text.trim(),
       'lotOpenDays': day,
-      'lotBikeCapacity': lotBikeCapacity.text.trim(),
+      'lotBikeCapacity': bikeCapacity,
       'lotCarCapacity': lotCarCapacity.text.trim(),
       'lotBikeFee': lotBikeFee.text.trim(),
       'lotCarFee': lotCarFee.text.trim(),
