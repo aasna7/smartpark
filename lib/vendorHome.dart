@@ -34,7 +34,7 @@ class _VendorHomeState extends State<VendorHome> {
       this.setState(() {
         // capacityOfBike.add(doc.data["lotBikeCapacity"][0]);
         bikeSlots = doc.data["lotBikeCapacity"].length;
-        carSlots = int.parse(doc.data["lotCarCapacity"]);
+        carSlots = doc.data["lotCarCapacity"].length;
       });
     });
     // print("capacity of bike" + capacityOfBike[0]);

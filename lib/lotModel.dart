@@ -25,7 +25,7 @@ class Lot {
   Lot.fromMap(Map snapshot)
       : email = snapshot['email'],
         lotName = snapshot["lotName"],
-        carSlots = snapshot['lotCarCapacity'],
+        carSlots = snapshot['lotCarCapacity'].length.toString(),
         bikeSlots = snapshot['lotBikeCapacity'].length.toString(),
         openTime = snapshot['lotOpenTime'],
         closeTime = snapshot['lotCloseTime'],

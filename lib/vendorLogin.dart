@@ -58,6 +58,7 @@ class _VendorLoginState extends State<VendorLogin> {
       setState(() {
         isLoading = false;
       });
+      _showErrorMessage();
     }
   }
 
@@ -97,6 +98,23 @@ class _VendorLoginState extends State<VendorLogin> {
         );
       },
     );
+  }
+
+  void _showErrorMessage() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              content: Text("Incorrect email or password"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ]);
+        });
   }
 
   @override

@@ -64,6 +64,25 @@ class _VendorAddPackageState extends State<VendorAddPackage> {
         'packageCost': packageCost.text.trim(),
       });
       print(userEmail);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            content: Text("Package Added Successfully"),
+            actions: <Widget>[
+              FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => VendorPackages()));
+                  }),
+            ],
+          );
+        },
+      );
       return userEmail;
     }
 

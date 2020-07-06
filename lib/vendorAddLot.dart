@@ -45,6 +45,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
   String userImage;
   List day = [];
   List bikeCapacity = [];
+  List carCapacity = [];
 
   void convert() async {
     List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(
@@ -67,6 +68,9 @@ class _VendorAddLotState extends State<VendorAddLot> {
     for (var i = 1; i <= int.parse(lotBikeCapacity.text); i++) {
       bikeCapacity.add({"slotName": "B" + i.toString(), "available": "true"});
     }
+    for (var i = 1; i <= int.parse(lotCarCapacity.text); i++) {
+      carCapacity.add({"slotName": "C" + i.toString(), "available": "true"});
+    }
     Firestore.instance.collection('parkinglot').document(userEmail).setData({
       'email': userEmail.trim(),
       'lotName': lotName.text.trim(),
@@ -74,7 +78,7 @@ class _VendorAddLotState extends State<VendorAddLot> {
       'lotCloseTime': lotCloseTime.text.trim(),
       'lotOpenDays': day,
       'lotBikeCapacity': bikeCapacity,
-      'lotCarCapacity': lotCarCapacity.text.trim(),
+      'lotCarCapacity': carCapacity,
       'lotBikeFee': lotBikeFee.text.trim(),
       'lotCarFee': lotCarFee.text.trim(),
       'lotLocation': new GeoPoint(

@@ -9,6 +9,9 @@ class _TestState extends State<Test> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Flutter"),
+      ),
       body: Center(
         child: RaisedButton(
           onPressed: () {
@@ -30,6 +33,28 @@ class _TestState extends State<Test> {
                               child: Icon(Icons.close),
                               backgroundColor: Colors.red,
                             ),
+                          ),
+                        ),
+                        Form(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: TextFormField(),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: TextFormField(),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: RaisedButton(
+                                  child: Text("Submit"),
+                                  onPressed: () {},
+                                ),
+                              )
+                            ],
                           ),
                         ),
                       ],

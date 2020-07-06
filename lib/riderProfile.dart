@@ -163,6 +163,10 @@ class _RiderProfileState extends State<RiderProfile> {
                             ),
                           ),
                     RaisedButton(
+                      padding: EdgeInsets.all(15.0),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          side: BorderSide(color: Colors.black)),
                       onPressed: () {
                         Navigator.push(
                             context,
@@ -176,7 +180,10 @@ class _RiderProfileState extends State<RiderProfile> {
                                       contact: snapshot.data['contact'],
                                     )));
                       },
-                      child: Text("Edit Profile"),
+                      child: Text(
+                        "Edit Profile",
+                        style: TextStyle(fontSize: 20),
+                      ),
                     )
                   ],
                 ),
