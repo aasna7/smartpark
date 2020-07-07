@@ -267,26 +267,15 @@ class _RiderBookingPageState extends State<RiderBookingPage> {
     getLots();
   }
 
-  // Future<String> getLots() async {
-  //   var docRef =
-  //       Firestore.instance.collection('parkinglot').document(widget.email);
-  //   docRef.get().then((doc) {
-  //     this.setState(() {
-  //       bikeSlots = int.parse(doc.data["lotBikeCapacity"]);
-  //       carSlots = int.parse(doc.data["lotCarCapacity"]);
-  //     });
-  //   });
-  //   return widget.email;
-  // }
   Future<String> getLots() async {
     var docRef =
         Firestore.instance.collection('parkinglot').document(widget.email);
     docRef.get().then((doc) {
       capacityOfBike = doc.data["lotBikeCapacity"];
-      print(capacityOfBike);
+
       capacityofCar = doc.data["lotCarCapacity"];
+      print(capacityofCar);
       this.setState(() {
-        // capacityOfBike.add(doc.data["lotBikeCapacity"][0]);
         bikeSlots = doc.data["lotBikeCapacity"].length;
         carSlots = doc.data["lotCarCapacity"].length;
         bikeFee = doc.data['lotBikeFee'];
@@ -297,11 +286,15 @@ class _RiderBookingPageState extends State<RiderBookingPage> {
     return widget.email;
   }
 
-  Future<String> bookCarSlots() async {
+  Future<String> bookCarSlots(name, number) async {
+    print("name");
+    print(name);
+    print("number");
+    print(number);
     final FirebaseUser user = await FirebaseAuth.instance.currentUser();
     final String userEmail = user.email.toString();
 
-    Firestore.instance.collection('reservations').document().setData({
+    Firestore.instance.collection('reservation').document().setData({
       "riderEmail": userEmail,
       "vendorEmail": widget.email,
       "vehicleType": "Car",
@@ -309,11 +302,32 @@ class _RiderBookingPageState extends State<RiderBookingPage> {
       "arrivingTime": arrivingTime.text,
       "slotNo": capacityofCar[slotNumber]["slotName"]
     });
+
     Firestore.instance
         .collection('parkinglot')
         .document(widget.email)
-        .updateData({"lotCarCapacity[$slotNumber][available]": "false"});
-    print("data updated");
+        .updateData({
+      'lotCarCapacity': FieldValue.arrayUnion([
+        {
+          "available": 'false',
+          'slotName': name,
+        }
+      ]),
+    });
+
+    Firestore.instance
+        .collection('parkinglot')
+        .document(widget.email)
+        .updateData({
+      'lotCarCapacity': FieldValue.arrayRemove([
+        {
+          'available': 'true',
+          'slotName': name,
+        }
+      ]),
+    });
+
+    print("data updated" + name);
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -413,7 +427,10 @@ class _RiderBookingPageState extends State<RiderBookingPage> {
                                                     onPressed: () {
                                                       Navigator.of(context)
                                                           .pop();
-                                                      bookCarSlots();
+                                                      bookCarSlots(
+                                                          capacityofCar[index]
+                                                              ["slotName"],
+                                                          index);
                                                       print(
                                                           "You have selected " +
                                                               capacityofCar[
@@ -422,7 +439,10 @@ class _RiderBookingPageState extends State<RiderBookingPage> {
                                                       setState(() {
                                                         slotNumber = index;
 
-                                                        print(slotNumber);
+                                                        print(
+                                                            "The slotNUmber is" +
+                                                                slotNumber
+                                                                    .toString());
                                                       });
                                                     },
                                                     shape:
