@@ -320,10 +320,64 @@ class _RiderBookingPageState extends State<RiderBookingPage> {
         .document(widget.email)
         .updateData({
       'lotCarCapacity': FieldValue.arrayRemove([
+        {'available': 'true', 'slotName': name, 'bookedBy': userEmail}
+      ]),
+    });
+
+    print("data updated" + name);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          content: Text("Slot Booked"),
+          actions: <Widget>[
+            FlatButton(
+                child: Text("Ok"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<String> bookBikeSlots(name, number) async {
+    print("name");
+    print(name);
+    print("number");
+    print(number);
+    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final String userEmail = user.email.toString();
+
+    Firestore.instance.collection('reservation').document().setData({
+      "riderEmail": userEmail,
+      "vendorEmail": widget.email,
+      "vehicleType": "Bike",
+      "reserveTime": reserveTime.text,
+      "arrivingTime": arrivingTime.text,
+      "slotNo": capacityOfBike[slotNumber]["slotName"]
+    });
+
+    Firestore.instance
+        .collection('parkinglot')
+        .document(widget.email)
+        .updateData({
+      'lotBikeCapacity': FieldValue.arrayUnion([
         {
-          'available': 'true',
+          "available": 'false',
           'slotName': name,
         }
+      ]),
+    });
+
+    Firestore.instance
+        .collection('parkinglot')
+        .document(widget.email)
+        .updateData({
+      'lotBikeCapacity': FieldValue.arrayRemove([
+        {'available': 'true', 'slotName': name, 'Booked By': userEmail}
       ]),
     });
 
@@ -427,17 +481,17 @@ class _RiderBookingPageState extends State<RiderBookingPage> {
                                                     onPressed: () {
                                                       Navigator.of(context)
                                                           .pop();
-                                                      bookCarSlots(
-                                                          capacityofCar[index]
-                                                              ["slotName"],
-                                                          index);
-                                                      print(
-                                                          "You have selected " +
-                                                              capacityofCar[
-                                                                      index]
-                                                                  ["slotName"]);
                                                       setState(() {
                                                         slotNumber = index;
+                                                        bookCarSlots(
+                                                            capacityofCar[index]
+                                                                ["slotName"],
+                                                            index);
+                                                        print(
+                                                            "You have selected " +
+                                                                capacityofCar[
+                                                                        index][
+                                                                    "slotName"]);
 
                                                         print(
                                                             "The slotNUmber is" +
@@ -556,6 +610,10 @@ class _RiderBookingPageState extends State<RiderBookingPage> {
 
                                                         print(slotNumber);
                                                       });
+                                                      bookBikeSlots(
+                                                          capacityOfBike[index]
+                                                              ["slotName"],
+                                                          index);
                                                     },
                                                     shape:
                                                         RoundedRectangleBorder(

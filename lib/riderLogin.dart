@@ -22,42 +22,47 @@ class _RiderLoginState extends State<RiderLogin> {
   Future<String> login() async {
     print(email.text);
     print(password.text);
-    try {
-      setState(() {
-        isLoading = true;
-      });
+    if (email.text.isEmpty || password.text.isEmpty) {
+      _showNullMessage();
+    } else {
+      try {
+        setState(() {
+          isLoading = true;
+        });
 
-      FirebaseUser user = (await FirebaseAuth.instance
-              .signInWithEmailAndPassword(
-                  email: email.text.trim(), password: password.text.trim()))
-          .user;
-      final docRef = await Firestore.instance
-          .collection('vehicledetails')
-          .document(email.text)
-          .get();
-      if (docRef.data['email'] == email.text) {
+        FirebaseUser user = (await FirebaseAuth.instance
+                .signInWithEmailAndPassword(
+                    email: email.text.trim(), password: password.text.trim()))
+            .user;
+        final docRef = await Firestore.instance
+            .collection('vehicledetails')
+            .document(email.text)
+            .get();
+        if (docRef.data['email'] == email.text) {
+          setState(() {
+            print(email.text);
+            existance = true;
+          });
+        } else {
+          setState(() {
+            print(email.text);
+            existance = false;
+          });
+        }
+
         setState(() {
-          print(email.text);
-          existance = true;
+          isLoading = false;
         });
-      } else {
+        _showLoginSuccessDialog();
+        return user.uid;
+      } catch (e) {
+        print(e.message);
+
         setState(() {
-          print(email.text);
-          existance = false;
+          isLoading = false;
         });
+        _showErrorMessage();
       }
-
-      setState(() {
-        isLoading = false;
-      });
-      _showLoginSuccessDialog();
-      return user.uid;
-    } catch (e) {
-      print(e.message);
-
-      setState(() {
-        isLoading = false;
-      });
     }
   }
 
@@ -97,6 +102,40 @@ class _RiderLoginState extends State<RiderLogin> {
         );
       },
     );
+  }
+
+  void _showErrorMessage() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              content: Text("Incorrect email or password"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ]);
+        });
+  }
+
+  void _showNullMessage() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              content: Text("Please fill all the credentials!"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ]);
+        });
   }
 
   @override

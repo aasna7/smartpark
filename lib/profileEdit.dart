@@ -96,11 +96,11 @@ class _ProfileEditState extends State<ProfileEdit> {
       "contact": contactController.text.trim(),
       "email": emailController.text.trim(),
       "location": locationController.text.trim(),
-      (imgUrl == null)
-          ? "image"
-          : "https://i.pinimg.com/originals/83/c0/0f/83c00f59d66869aa22d3bd5f35e26c6d.png": {
-        "image": imgUrl
-      }
+      // (widget.image == null)
+      //     ? "image"
+      //     : "https://i.pinimg.com/originals/83/c0/0f/83c00f59d66869aa22d3bd5f35e26c6d.png": {
+      //   "image": widget.image
+      // }
     }).then((result) {
       print("Updated");
     }).catchError((onError) {
@@ -136,108 +136,110 @@ class _ProfileEditState extends State<ProfileEdit> {
       appBar: AppBar(
           title: Text("Profile Edit"),
           backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),
-      body: Column(
-        children: <Widget>[
-          Stack(
-            children: <Widget>[
-              Container(
-                height: 120,
-                width: MediaQuery.of(context).size.width,
-                color: Color.fromRGBO(5, 115, 124, 1),
-              ),
-              widget.image == ""
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(80),
-                      child: Image.network(
-                        'https://i.pinimg.com/originals/83/c0/0f/83c00f59d66869aa22d3bd5f35e26c6d.png',
-                        height: 120,
-                      ),
-                    )
-                  : Center(
-                      child: Padding(
-                          padding: const EdgeInsets.only(top: 60.0),
-                          child: (_image == null)
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(80),
-                                  child: Image.network(
-                                    widget.image,
-                                    height: 120,
-                                    width: 120,
-                                  ),
-                                )
-                              : ClipRRect(
-                                  borderRadius: BorderRadius.circular(80),
-                                  child: Image.file(_image,
-                                      height: 120, width: 120),
-                                )),
-                    ),
-              Positioned(
-                top: 50,
-                bottom: 0,
-                left: 140,
-                right: 0,
-                child: IconButton(
-                  icon: Icon(Icons.add_a_photo),
-                  color: Colors.black,
-                  onPressed: () {
-                    chooseMode(context);
-                  },
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Stack(
+              children: <Widget>[
+                Container(
+                  height: 120,
+                  width: MediaQuery.of(context).size.width,
+                  color: Color.fromRGBO(5, 115, 124, 1),
                 ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-                controller: firstnameController,
-                decoration: InputDecoration(
-                  labelText: "First Name",
-                  border: OutlineInputBorder(),
-                )),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-                controller: lastnameController,
-                decoration: InputDecoration(
-                  labelText: "Last Name",
-                  border: OutlineInputBorder(),
-                )),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  labelText: "Email",
-                  border: OutlineInputBorder(),
-                )),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-                controller: locationController,
-                decoration: InputDecoration(
-                  labelText: "Address",
-                  border: OutlineInputBorder(),
-                )),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-                controller: contactController,
-                decoration: InputDecoration(
-                  labelText: "Contact",
-                  border: OutlineInputBorder(),
-                )),
-          ),
-          RaisedButton(
-            onPressed: updateProfile,
-            child: Text(
-              "Update",
+                widget.image == ""
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(80),
+                        child: Image.network(
+                          'https://i.pinimg.com/originals/83/c0/0f/83c00f59d66869aa22d3bd5f35e26c6d.png',
+                          height: 120,
+                        ),
+                      )
+                    : Center(
+                        child: Padding(
+                            padding: const EdgeInsets.only(top: 60.0),
+                            child: (_image == null)
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(80),
+                                    child: Image.network(
+                                      widget.image,
+                                      height: 120,
+                                      width: 120,
+                                    ),
+                                  )
+                                : ClipRRect(
+                                    borderRadius: BorderRadius.circular(80),
+                                    child: Image.file(_image,
+                                        height: 120, width: 120),
+                                  )),
+                      ),
+                Positioned(
+                  top: 50,
+                  bottom: 0,
+                  left: 140,
+                  right: 0,
+                  child: IconButton(
+                    icon: Icon(Icons.add_a_photo),
+                    color: Colors.black,
+                    onPressed: () {
+                      chooseMode(context);
+                    },
+                  ),
+                ),
+              ],
             ),
-          )
-        ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                  controller: firstnameController,
+                  decoration: InputDecoration(
+                    labelText: "First Name",
+                    border: OutlineInputBorder(),
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                  controller: lastnameController,
+                  decoration: InputDecoration(
+                    labelText: "Last Name",
+                    border: OutlineInputBorder(),
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    labelText: "Email",
+                    border: OutlineInputBorder(),
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                  controller: locationController,
+                  decoration: InputDecoration(
+                    labelText: "Address",
+                    border: OutlineInputBorder(),
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                  controller: contactController,
+                  decoration: InputDecoration(
+                    labelText: "Contact",
+                    border: OutlineInputBorder(),
+                  )),
+            ),
+            RaisedButton(
+              onPressed: updateProfile,
+              child: Text(
+                "Update",
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

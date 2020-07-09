@@ -15,6 +15,7 @@ class _VendorHomeState extends State<VendorHome> {
   int bikeSlots = 0;
   int carSlots = 0;
   List capacityOfBike = [];
+  List capacityOfCar = [];
 
   @override
   void initState() {
@@ -31,6 +32,7 @@ class _VendorHomeState extends State<VendorHome> {
     docRef.get().then((doc) {
       capacityOfBike = doc.data["lotBikeCapacity"];
       print(capacityOfBike);
+      capacityOfCar = doc.data["lotCarCapacity"];
       this.setState(() {
         // capacityOfBike.add(doc.data["lotBikeCapacity"][0]);
         bikeSlots = doc.data["lotBikeCapacity"].length;
@@ -64,39 +66,47 @@ class _VendorHomeState extends State<VendorHome> {
                     child: ListView.builder(
                         itemCount: carSlots, // Number of slot of Car
                         itemBuilder: (BuildContext context, int index) {
-                          index = index + 1;
+                          int number = index + 1;
                           return InkWell(
                             onTap: () {
                               showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                child: new CupertinoAlertDialog(
-                                  title: new Column(
-                                    children: <Widget>[
-                                      new Text("GridView"),
-                                      new Icon(
-                                        Icons.favorite,
-                                        color: Colors.red,
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      content: Stack(
+                                        overflow: Overflow.visible,
+                                        children: <Widget>[
+                                          Positioned(
+                                            right: -40.0,
+                                            top: -40.0,
+                                            child: InkResponse(
+                                              onTap: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: CircleAvatar(
+                                                child: Icon(Icons.close),
+                                                backgroundColor: Colors.red,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                  content: new Text("Car slot no. $index"),
-                                  actions: <Widget>[
-                                    new FlatButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: new Text("OK"))
-                                  ],
-                                ),
-                              );
+                                    );
+                                  });
                             },
                             child: Container(
-                              height: 100,
-                              decoration: BoxDecoration(
-                                border: Border.all(width: 1),
-                              ),
-                              child: Center(child: Text('Car Slot No. $index')),
+                              height: 120,
+                              decoration:
+                                  capacityOfCar[index]["available"] == "true"
+                                      ? BoxDecoration(
+                                          border: Border.all(width: 1),
+                                          color: Colors.green)
+                                      : BoxDecoration(
+                                          border: Border.all(width: 1),
+                                          color: Colors.red),
+                              child: Center(
+                                  child: Text("Car Slot No. " +
+                                      capacityOfCar[index]["slotName"])),
                             ),
                           );
                         }),
@@ -148,8 +158,8 @@ class _VendorHomeState extends State<VendorHome> {
                                           border: Border.all(width: 1),
                                           color: Colors.red),
                               child: Center(
-                                  child:
-                                      Text(capacityOfBike[index]["slotName"])),
+                                  child: Text("Bike Slot No. " +
+                                      capacityOfBike[index]["slotName"])),
                             ),
                           );
                         }),

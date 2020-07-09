@@ -7,6 +7,8 @@ import 'package:smartpark/vendorProfile.dart';
 import 'package:smartpark/vendorSettings.dart';
 
 class VendorDashboard extends StatefulWidget {
+  int pageIndex = 2;
+  VendorDashboard({this.pageIndex});
   @override
   _VendorDashboardState createState() => _VendorDashboardState();
 }

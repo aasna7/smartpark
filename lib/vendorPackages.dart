@@ -15,26 +15,113 @@ class _VendorPackagesState extends State<VendorPackages> {
             centerTitle: true,
             title: Text('Packages'),
             backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),
-        body: Container(
-          color: Colors.grey[400],
-          child: Stack(
-            children: <Widget>[
-              Center(
-                child: Positioned(
-                  top: 30.0,
-                  child: Text(
-                    "No Packages Added",
-                    style: TextStyle(fontSize: 20.0),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        body: VendorShowPackages(),
         floatingActionButton: FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => VendorAddPackage()));
+            },
             child: Icon(Icons.add),
             backgroundColor: Colors.green));
+  }
+}
+
+class VendorShowPackages extends StatefulWidget {
+  @override
+  _VendorShowPackagesState createState() => _VendorShowPackagesState();
+}
+
+class _VendorShowPackagesState extends State<VendorShowPackages> {
+  Future getPackages() async {
+    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final String userEmail = user.email.toString();
+    QuerySnapshot qn = await Firestore.instance
+        .collection('package')
+        .where("email", isEqualTo: userEmail)
+        .getDocuments();
+    print(qn.documents);
+    return qn.documents; // print("capacity of bike" + capacityOfBike[0]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: FutureBuilder(
+        future: getPackages(),
+        builder: (_, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: Text("Loading.."));
+          } else {
+            return ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (_, index) {
+                  return Card(
+                    elevation: 5.0,
+                    child: ListTile(
+                      leading: Icon(Icons.local_offer),
+                      title: Text(
+                        snapshot.data[index].data['packageName'],
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      subtitle: Text(
+                          snapshot.data[index].data['packageDescription'] +
+                              "\n" +
+                              "Package Cost:" +
+                              snapshot.data[index].data['packageCost'] +
+                              "\n" +
+                              "Package Validity:" +
+                              snapshot.data[index].data['packageValidity']),
+                      trailing: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Delete Package'),
+                                content: Text(
+                                    "Are you sure you want to delete this package ?"),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    child: Text("YES"),
+                                    onPressed: () async {
+                                      //Put your code here which you want to execute on Yes button click.
+                                      await Firestore.instance
+                                          .collection('package')
+                                          .document(
+                                              snapshot.data[index].documentID)
+                                          .delete();
+                                      Navigator.of(context).pop();
+                                      getPackages();
+                                    },
+                                  ),
+                                  FlatButton(
+                                    child: Text("NO"),
+                                    onPressed: () {
+                                      //Put your code here which you want to execute on No button click.
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  FlatButton(
+                                    child: Text("CANCEL"),
+                                    onPressed: () {
+                                      //Put your code here which you want to execute on Cancel button click.
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                    ),
+                  );
+                });
+          }
+        },
+      ),
+    );
   }
 }
 
@@ -55,7 +142,7 @@ class _VendorAddPackageState extends State<VendorAddPackage> {
     Future<String> addPackage() async {
       final FirebaseUser user = await FirebaseAuth.instance.currentUser();
       final String userEmail = user.email.toString();
-      Firestore.instance.collection('package').document(userEmail).setData({
+      Firestore.instance.collection('package').document().setData({
         'email': userEmail.trim(),
         'packageName': packageName.text.trim(),
         'packageType': packageType.text.trim(),
@@ -74,10 +161,8 @@ class _VendorAddPackageState extends State<VendorAddPackage> {
               FlatButton(
                   child: Text("Ok"),
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => VendorPackages()));
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
                   }),
             ],
           );

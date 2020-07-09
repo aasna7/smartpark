@@ -22,43 +22,47 @@ class _VendorLoginState extends State<VendorLogin> {
   Future<String> login() async {
     print(email.text);
     print(password.text);
-    try {
-      setState(() {
-        isLoading = true;
-      });
+    if (email.text.isEmpty || password.text.isEmpty) {
+      _showNullMessage();
+    } else {
+      try {
+        setState(() {
+          isLoading = true;
+        });
 
-      FirebaseUser user = (await FirebaseAuth.instance
-              .signInWithEmailAndPassword(
-                  email: email.text.trim(), password: password.text.trim()))
-          .user;
-      final docRef = await Firestore.instance
-          .collection('parkinglot')
-          .document(email.text)
-          .get();
-      if (docRef.exists) {
+        FirebaseUser user = (await FirebaseAuth.instance
+                .signInWithEmailAndPassword(
+                    email: email.text.trim(), password: password.text.trim()))
+            .user;
+        final docRef = await Firestore.instance
+            .collection('parkinglot')
+            .document(email.text)
+            .get();
+        if (docRef.exists) {
+          setState(() {
+            print(email.text);
+            existance = true;
+          });
+        } else {
+          setState(() {
+            print(email.text);
+            existance = false;
+          });
+        }
+
         setState(() {
-          print(email.text);
-          existance = true;
+          isLoading = false;
         });
-      } else {
+        _showLoginSuccessDialog();
+        return user.uid;
+      } catch (e) {
+        print(e.message);
+
         setState(() {
-          print(email.text);
-          existance = false;
+          isLoading = false;
         });
+        _showErrorMessage();
       }
-
-      setState(() {
-        isLoading = false;
-      });
-      _showLoginSuccessDialog();
-      return user.uid;
-    } catch (e) {
-      print(e.message);
-
-      setState(() {
-        isLoading = false;
-      });
-      _showErrorMessage();
     }
   }
 
@@ -106,6 +110,23 @@ class _VendorLoginState extends State<VendorLogin> {
         builder: (BuildContext context) {
           return AlertDialog(
               content: Text("Incorrect email or password"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ]);
+        });
+  }
+
+  void _showNullMessage() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              content: Text("Please fill all the required credentials!"),
               actions: <Widget>[
                 FlatButton(
                   child: Text("Ok"),

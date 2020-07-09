@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smartpark/vendorDashboard.dart';
 import 'package:smartpark/welcomeScreen.dart';
 
 class VendorSettings extends StatefulWidget {
@@ -174,8 +175,8 @@ class _VendorLotEditState extends State<VendorLotEdit> {
             FlatButton(
               child: Text("Ok"),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => VendorSettings()));
+                Navigator.of(context).pop();
+                 Navigator.of(context).pop();
               },
             ),
           ],
