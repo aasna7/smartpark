@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:smartpark/vendorAddLot.dart';
-import 'package:smartpark/vendorRegister.dart';
+import 'package:smartpark/vendor/vendorAddLot.dart';
+import 'package:smartpark/vendor/vendorRegister.dart';
 
 import 'vendorDashboard.dart';
 

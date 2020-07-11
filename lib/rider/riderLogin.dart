@@ -3,10 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:smartpark/vendorAddLot.dart';
-import 'package:smartpark/vendorRegister.dart';
-
-import 'vendorDashboard.dart';
+import 'package:smartpark/rider/riderRegister.dart';
 
 class RiderLogin extends StatefulWidget {
   @override
@@ -242,7 +239,7 @@ class _RiderLoginState extends State<RiderLogin> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => VendorRegister()));
+                              builder: (context) => RiderRegister()));
                     },
                     child: Container(
                       height: 50,

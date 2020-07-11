@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartpark/welcomeScreen.dart';
 
@@ -52,11 +53,9 @@ class _RiderSettingsState extends State<RiderSettings> {
                     ),
                     title: Text("Log Out?"),
                     trailing: Icon(Icons.keyboard_arrow_right),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => WelcomeScreen()));
+                    onTap: () async {
+                      await FirebaseAuth.instance.signOut();
+                      Navigator.of(context).pushNamed('/WelcomeScreen');
                     },
                   )
                 ],

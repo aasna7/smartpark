@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:smartpark/riderProfileEdit.dart';
+import 'package:smartpark/rider/riderProfileEdit.dart';
 
 class RiderProfile extends StatefulWidget {
   @override

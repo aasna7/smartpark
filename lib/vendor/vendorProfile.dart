@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:smartpark/profileEdit.dart';
+import 'package:smartpark/vendor/profileEdit.dart';
 
 class VendorProfile extends StatefulWidget {
   @override

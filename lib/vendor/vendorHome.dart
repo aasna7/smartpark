@@ -43,6 +43,18 @@ class _VendorHomeState extends State<VendorHome> {
     return userEmail;
   }
 
+  Future getHistory() async {
+    String userEmail;
+    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    userEmail = user.email.toString();
+    QuerySnapshot qn = await Firestore.instance
+        .collection('reservation')
+        .where("vendorEmail", isEqualTo: userEmail)
+        .getDocuments();
+    print(qn.documents);
+    return qn.documents; // print("capacity of bike" + capacityOfBike[0]);
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -187,24 +199,27 @@ class _VendorHomeState extends State<VendorHome> {
               ),
             ),
             bikeSlots > 0 && carSlots > 0
-                ? Positioned(
-                    bottom: 50,
-                    left: 16,
-                    right: 16,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: Colors.blue[700],
+                ? InkWell(
+                    onTap: () {},
+                    child: Positioned(
+                      bottom: 50,
+                      left: 16,
+                      right: 16,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: Colors.blue[700],
+                        ),
+                        child: Center(
+                            child: Text(
+                          'Reservation',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Colors.white),
+                        )),
                       ),
-                      child: Center(
-                          child: Text(
-                        'Reservation',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.white),
-                      )),
                     ),
                   )
                 : Container()

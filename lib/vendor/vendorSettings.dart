@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:smartpark/vendorDashboard.dart';
+import 'package:smartpark/vendor/vendorDashboard.dart';
 import 'package:smartpark/welcomeScreen.dart';
 
 class VendorSettings extends StatefulWidget {
@@ -84,11 +84,9 @@ class _VendorSettingsState extends State<VendorSettings> {
                     ),
                     title: Text("Log Out?"),
                     trailing: Icon(Icons.keyboard_arrow_right),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => WelcomeScreen()));
+                    onTap: () async {
+                      await FirebaseAuth.instance.signOut();
+                      Navigator.of(context).pushNamed('/WelcomeScreen');
                     },
                   )
                 ],
@@ -176,7 +174,7 @@ class _VendorLotEditState extends State<VendorLotEdit> {
               child: Text("Ok"),
               onPressed: () {
                 Navigator.of(context).pop();
-                 Navigator.of(context).pop();
+                Navigator.of(context).pop();
               },
             ),
           ],

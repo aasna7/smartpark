@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:smartpark/lotModel.dart';
+import 'package:smartpark/rider/lotModel.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -261,6 +261,7 @@ class _RiderBookingPageState extends State<RiderBookingPage> {
   String carFee;
   List capacityOfBike = [];
   List capacityofCar = [];
+  String lotName;
 
   void initState() {
     super.initState();
@@ -274,6 +275,7 @@ class _RiderBookingPageState extends State<RiderBookingPage> {
       capacityOfBike = doc.data["lotBikeCapacity"];
 
       capacityofCar = doc.data["lotCarCapacity"];
+      lotName = doc.data["lotName"];
       print(capacityofCar);
       this.setState(() {
         bikeSlots = doc.data["lotBikeCapacity"].length;
@@ -300,7 +302,8 @@ class _RiderBookingPageState extends State<RiderBookingPage> {
       "vehicleType": "Car",
       "reserveTime": reserveTime.text,
       "arrivingTime": arrivingTime.text,
-      "slotNo": capacityofCar[slotNumber]["slotName"]
+      "slotNo": capacityofCar[slotNumber]["slotName"],
+      "lotName": lotName
     });
 
     Firestore.instance
@@ -357,7 +360,8 @@ class _RiderBookingPageState extends State<RiderBookingPage> {
       "vehicleType": "Bike",
       "reserveTime": reserveTime.text,
       "arrivingTime": arrivingTime.text,
-      "slotNo": capacityOfBike[slotNumber]["slotName"]
+      "slotNo": capacityOfBike[slotNumber]["slotName"],
+      "lotName": lotName
     });
 
     Firestore.instance
@@ -423,116 +427,167 @@ class _RiderBookingPageState extends State<RiderBookingPage> {
                         itemCount: carSlots, // Number of slot of Car
                         itemBuilder: (BuildContext context, int index) {
                           int number = index + 1;
-                          return InkWell(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      content: Stack(
-                                        overflow: Overflow.visible,
-                                        children: <Widget>[
-                                          Positioned(
-                                            right: -40.0,
-                                            top: -40.0,
-                                            child: InkResponse(
-                                              onTap: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: CircleAvatar(
-                                                child: Icon(Icons.close),
-                                                backgroundColor: Colors.red,
-                                              ),
-                                            ),
-                                          ),
-                                          Form(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
+                          return capacityofCar[index]["available"] == "true"
+                              ? InkWell(
+                                  onTap: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            content: Stack(
+                                              overflow: Overflow.visible,
                                               children: <Widget>[
-                                                Padding(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  child: TextFormField(
-                                                    controller: reserveTime,
-                                                    decoration: InputDecoration(
-                                                        hintText:
-                                                            "Reserve Time"),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  child: TextFormField(
-                                                    controller: arrivingTime,
-                                                    decoration: InputDecoration(
-                                                        hintText:
-                                                            "Arriving Time"),
-                                                  ),
-                                                ),
-                                                Text("Car slot no. $number"),
-                                                Text("Fee per Hour: " + carFee),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: RaisedButton(
-                                                    child: Text(
-                                                      "Book",
-                                                      style: TextStyle(
-                                                          fontSize: 20),
-                                                    ),
-                                                    onPressed: () {
+                                                Positioned(
+                                                  right: -40.0,
+                                                  top: -40.0,
+                                                  child: InkResponse(
+                                                    onTap: () {
                                                       Navigator.of(context)
                                                           .pop();
-                                                      setState(() {
-                                                        slotNumber = index;
-                                                        bookCarSlots(
-                                                            capacityofCar[index]
-                                                                ["slotName"],
-                                                            index);
-                                                        print(
-                                                            "You have selected " +
-                                                                capacityofCar[
-                                                                        index][
-                                                                    "slotName"]);
-
-                                                        print(
-                                                            "The slotNUmber is" +
-                                                                slotNumber
-                                                                    .toString());
-                                                      });
                                                     },
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        18.0),
-                                                            side: BorderSide(
-                                                                color: Colors
-                                                                    .red)),
+                                                    child: CircleAvatar(
+                                                      child: Icon(Icons.close),
+                                                      backgroundColor:
+                                                          Colors.red,
+                                                    ),
                                                   ),
-                                                )
+                                                ),
+                                                Form(
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.all(8.0),
+                                                        child: TextFormField(
+                                                          controller:
+                                                              reserveTime,
+                                                          decoration:
+                                                              InputDecoration(
+                                                                  hintText:
+                                                                      "Reserve Time"),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.all(8.0),
+                                                        child: TextFormField(
+                                                          controller:
+                                                              arrivingTime,
+                                                          decoration:
+                                                              InputDecoration(
+                                                                  hintText:
+                                                                      "Arriving Time"),
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                          "Car slot no. $number"),
+                                                      Text("Fee per Hour: " +
+                                                          carFee),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: RaisedButton(
+                                                          child: Text(
+                                                            "Book",
+                                                            style: TextStyle(
+                                                                fontSize: 20),
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            setState(() {
+                                                              slotNumber =
+                                                                  index;
+                                                              bookCarSlots(
+                                                                  capacityofCar[
+                                                                          index]
+                                                                      [
+                                                                      "slotName"],
+                                                                  index);
+                                                              print("You have selected " +
+                                                                  capacityofCar[
+                                                                          index]
+                                                                      [
+                                                                      "slotName"]);
+
+                                                              print("The slotNUmber is" +
+                                                                  slotNumber
+                                                                      .toString());
+                                                            });
+                                                          },
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          18.0),
+                                                              side: BorderSide(
+                                                                  color: Colors
+                                                                      .red)),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
                                               ],
                                             ),
-                                          ),
-                                        ],
-                                      ),
+                                          );
+                                        });
+                                  },
+                                  child: Container(
+                                    height: 120,
+                                    decoration: capacityofCar[index]
+                                                ["available"] ==
+                                            "true"
+                                        ? BoxDecoration(
+                                            border: Border.all(width: 1),
+                                            color: Colors.green)
+                                        : BoxDecoration(
+                                            border: Border.all(width: 1),
+                                            color: Colors.red),
+                                    child: Center(
+                                        child: Text("Car Slot No. " +
+                                            capacityofCar[index]["slotName"])),
+                                  ),
+                                )
+                              : InkWell(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        // return object of type Dialog
+                                        return AlertDialog(
+                                          content: Text("Slot Not Available"),
+                                          actions: <Widget>[
+                                            FlatButton(
+                                                child: Text("Ok"),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                }),
+                                          ],
+                                        );
+                                      },
                                     );
-                                  });
-                            },
-                            child: Container(
-                              height: 120,
-                              decoration:
-                                  capacityofCar[index]["available"] == "true"
-                                      ? BoxDecoration(
-                                          border: Border.all(width: 1),
-                                          color: Colors.green)
-                                      : BoxDecoration(
-                                          border: Border.all(width: 1),
-                                          color: Colors.red),
-                              child: Center(
-                                  child: Text("Car Slot No. " +
-                                      capacityofCar[index]["slotName"])),
-                            ),
-                          );
+                                  },
+                                  child: Container(
+                                    height: 80,
+                                    decoration: capacityofCar[index]
+                                                ["available"] ==
+                                            "true"
+                                        ? BoxDecoration(
+                                            border: Border.all(width: 1),
+                                            color: Colors.green)
+                                        : BoxDecoration(
+                                            border: Border.all(width: 1),
+                                            color: Colors.red),
+                                    child: Center(
+                                        child: Text("Car Slot No. " +
+                                            capacityofCar[index]["slotName"])),
+                                  ),
+                                );
                         }),
                   ),
                   Expanded(

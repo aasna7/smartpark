@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:smartpark/riderLogin.dart';
-import 'package:smartpark/vendorLogin.dart';
+import 'package:smartpark/rider/riderLogin.dart';
+import 'package:smartpark/vendor/vendorLogin.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override

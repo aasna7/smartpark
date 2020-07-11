@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:smartpark/vendorDashboard.dart';
+import 'package:smartpark/vendor/vendorDashboard.dart';
 
 class VendorAddLot extends StatefulWidget {
   final LatLng locationCoord;

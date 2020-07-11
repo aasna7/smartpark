@@ -1,33 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:smartpark/riderHistory.dart';
-import 'package:smartpark/riderHome.dart';
-import 'package:smartpark/riderPackages.dart';
-import 'package:smartpark/riderProfile.dart';
-import 'package:smartpark/riderSettings.dart';
-import 'package:smartpark/vendorHistory.dart';
-import 'package:smartpark/vendorHome.dart';
-import 'package:smartpark/vendorPackages.dart';
-import 'package:smartpark/vendorProfile.dart';
-import 'package:smartpark/vendorSettings.dart';
+import 'package:smartpark/vendor/vendorHistory.dart';
+import 'package:smartpark/vendor/vendorHome.dart';
+import 'package:smartpark/vendor/vendorPackages.dart';
+import 'package:smartpark/vendor/vendorProfile.dart';
+import 'package:smartpark/vendor/vendorSettings.dart';
 
-class RiderDashboard extends StatefulWidget {
+class VendorDashboard extends StatefulWidget {
+  int pageIndex = 2;
+  VendorDashboard({this.pageIndex});
   @override
-  _RiderDashboardState createState() => _RiderDashboardState();
+  _VendorDashboardState createState() => _VendorDashboardState();
 }
 
-class _RiderDashboardState extends State<RiderDashboard> {
+class _VendorDashboardState extends State<VendorDashboard> {
   int selectedPage = 2;
   final pageOptions = [Text('Item 1'), Text('Item 2'), Text('Item 3')];
 
   @override
   Widget build(BuildContext context) {
     final _widgetOptions = [
-      RiderProfile(),
-      RiderHistory(),
-      RiderHome(),
-      RiderPackages(),
-      RiderSettings()
+      VendorProfile(),
+      VendorHistory(),
+      VendorHome(),
+      VendorPackages(),
+      VendorSettings()
     ];
 
     return Scaffold(

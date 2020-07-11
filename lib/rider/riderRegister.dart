@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:smartpark/riderRegister.dart';
-import 'package:smartpark/vendorLogin.dart';
+import 'package:smartpark/rider/riderLogin.dart';
 
-class VendorRegister extends StatefulWidget {
+class RiderRegister extends StatefulWidget {
   @override
-  _VendorRegisterState createState() => _VendorRegisterState();
+  _RiderRegisterState createState() => _RiderRegisterState();
 }
 
-class _VendorRegisterState extends State<VendorRegister> {
+class _RiderRegisterState extends State<RiderRegister> {
   bool isLoading = false;
   bool passwordVisible;
   String user;
@@ -44,7 +43,7 @@ class _VendorRegisterState extends State<VendorRegister> {
       'firstName': firstName.text.trim(),
       'lastName': lastName.text.trim(),
       'contact': contact.text.trim(),
-      'userType': "vendor",
+      'userType': "rider",
       'image':
           "https://i.pinimg.com/originals/83/c0/0f/83c00f59d66869aa22d3bd5f35e26c6d.png",
       'location': ""
@@ -65,7 +64,7 @@ class _VendorRegisterState extends State<VendorRegister> {
               child: Text("Ok"),
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => VendorLogin()));
+                    MaterialPageRoute(builder: (context) => RiderLogin()));
               },
             ),
           ],
@@ -79,7 +78,7 @@ class _VendorRegisterState extends State<VendorRegister> {
     return Scaffold(
       appBar: AppBar(
           centerTitle: true,
-          title: Text('Vendor Register'),
+          title: Text('Rider Register'),
           backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),
       body: SingleChildScrollView(
         child: Center(
