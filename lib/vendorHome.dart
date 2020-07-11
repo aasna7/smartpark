@@ -67,48 +67,67 @@ class _VendorHomeState extends State<VendorHome> {
                         itemCount: carSlots, // Number of slot of Car
                         itemBuilder: (BuildContext context, int index) {
                           int number = index + 1;
-                          return InkWell(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      content: Stack(
-                                        overflow: Overflow.visible,
-                                        children: <Widget>[
-                                          Positioned(
-                                            right: -40.0,
-                                            top: -40.0,
-                                            child: InkResponse(
-                                              onTap: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: CircleAvatar(
-                                                child: Icon(Icons.close),
-                                                backgroundColor: Colors.red,
-                                              ),
+                          return capacityOfCar[index]["available"] == "true"
+                              ? InkWell(
+                                  onTap: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            content: Stack(
+                                              overflow: Overflow.visible,
+                                              children: <Widget>[
+                                                Positioned(
+                                                  right: -40.0,
+                                                  top: -40.0,
+                                                  child: InkResponse(
+                                                    onTap: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: CircleAvatar(
+                                                      child: Icon(Icons.close),
+                                                      backgroundColor:
+                                                          Colors.red,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  });
-                            },
-                            child: Container(
-                              height: 120,
-                              decoration:
-                                  capacityOfCar[index]["available"] == "true"
+                                          );
+                                        });
+                                  },
+                                  child: Container(
+                                    height: 120,
+                                    decoration: capacityOfCar[index]
+                                                ["available"] ==
+                                            "true"
+                                        ? BoxDecoration(
+                                            border: Border.all(width: 1),
+                                            color: Colors.green)
+                                        : BoxDecoration(
+                                            border: Border.all(width: 1),
+                                            color: Colors.red),
+                                    child: Center(
+                                        child: Text("Car Slot No. " +
+                                            capacityOfCar[index]["slotName"])),
+                                  ),
+                                )
+                              : Container(
+                                  height: 120,
+                                  decoration: capacityOfCar[index]
+                                              ["available"] ==
+                                          "true"
                                       ? BoxDecoration(
                                           border: Border.all(width: 1),
                                           color: Colors.green)
                                       : BoxDecoration(
                                           border: Border.all(width: 1),
                                           color: Colors.red),
-                              child: Center(
-                                  child: Text("Car Slot No. " +
-                                      capacityOfCar[index]["slotName"])),
-                            ),
-                          );
+                                  child: Center(
+                                      child: Text("Car Slot No. " +
+                                          capacityOfCar[index]["slotName"])),
+                                );
                         }),
                   ),
                   Expanded(

@@ -541,114 +541,163 @@ class _RiderBookingPageState extends State<RiderBookingPage> {
                             capacityOfBike.length, // number of slot for bike
                         itemBuilder: (BuildContext context, int index) {
                           int number = index + 1;
-                          return InkWell(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      content: Stack(
-                                        overflow: Overflow.visible,
-                                        children: <Widget>[
-                                          Positioned(
-                                            right: -40.0,
-                                            top: -40.0,
-                                            child: InkResponse(
-                                              onTap: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: CircleAvatar(
-                                                child: Icon(Icons.close),
-                                                backgroundColor: Colors.red,
-                                              ),
-                                            ),
-                                          ),
-                                          Form(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
+                          return capacityOfBike[index]["available"] == "true"
+                              ? InkWell(
+                                  onTap: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            content: Stack(
+                                              overflow: Overflow.visible,
                                               children: <Widget>[
-                                                Padding(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  child: TextFormField(
-                                                    controller: reserveTime,
-                                                    decoration: InputDecoration(
-                                                        hintText:
-                                                            "Reserve Time"),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  child: TextFormField(
-                                                    controller: arrivingTime,
-                                                    decoration: InputDecoration(
-                                                        hintText:
-                                                            "Arriving Time"),
-                                                  ),
-                                                ),
-                                                Text("Bike slot no. $number"),
-                                                Text(
-                                                    "Fee per Hour: " + bikeFee),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: RaisedButton(
-                                                    child: Text(
-                                                      "Book",
-                                                      style: TextStyle(
-                                                          fontSize: 20),
-                                                    ),
-                                                    onPressed: () {
+                                                Positioned(
+                                                  right: -40.0,
+                                                  top: -40.0,
+                                                  child: InkResponse(
+                                                    onTap: () {
                                                       Navigator.of(context)
                                                           .pop();
-                                                      print(
-                                                          "You have selected " +
-                                                              capacityOfBike[
-                                                                      index]
-                                                                  ["slotName"]);
-                                                      setState(() {
-                                                        slotNumber = index;
-
-                                                        print(slotNumber);
-                                                      });
-                                                      bookBikeSlots(
-                                                          capacityOfBike[index]
-                                                              ["slotName"],
-                                                          index);
                                                     },
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        18.0),
-                                                            side: BorderSide(
-                                                                color: Colors
-                                                                    .red)),
+                                                    child: CircleAvatar(
+                                                      child: Icon(Icons.close),
+                                                      backgroundColor:
+                                                          Colors.red,
+                                                    ),
                                                   ),
-                                                )
+                                                ),
+                                                Form(
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.all(8.0),
+                                                        child: TextFormField(
+                                                          controller:
+                                                              reserveTime,
+                                                          decoration:
+                                                              InputDecoration(
+                                                                  hintText:
+                                                                      "Reserve Time"),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.all(8.0),
+                                                        child: TextFormField(
+                                                          controller:
+                                                              arrivingTime,
+                                                          decoration:
+                                                              InputDecoration(
+                                                                  hintText:
+                                                                      "Arriving Time"),
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                          "Bike slot no. $number"),
+                                                      Text("Fee per Hour: " +
+                                                          bikeFee),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: RaisedButton(
+                                                          child: Text(
+                                                            "Book",
+                                                            style: TextStyle(
+                                                                fontSize: 20),
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            print("You have selected " +
+                                                                capacityOfBike[
+                                                                        index][
+                                                                    "slotName"]);
+                                                            setState(() {
+                                                              slotNumber =
+                                                                  index;
+
+                                                              print(slotNumber);
+                                                            });
+                                                            bookBikeSlots(
+                                                                capacityOfBike[
+                                                                        index][
+                                                                    "slotName"],
+                                                                index);
+                                                          },
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          18.0),
+                                                              side: BorderSide(
+                                                                  color: Colors
+                                                                      .red)),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
                                               ],
                                             ),
-                                          ),
-                                        ],
-                                      ),
+                                          );
+                                        });
+                                  },
+                                  child: Container(
+                                    height: 80,
+                                    decoration: capacityOfBike[index]
+                                                ["available"] ==
+                                            "true"
+                                        ? BoxDecoration(
+                                            border: Border.all(width: 1),
+                                            color: Colors.green)
+                                        : BoxDecoration(
+                                            border: Border.all(width: 1),
+                                            color: Colors.red),
+                                    child: Center(
+                                        child: Text("Bike Slot No. " +
+                                            capacityOfBike[index]["slotName"])),
+                                  ),
+                                )
+                              : InkWell(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        // return object of type Dialog
+                                        return AlertDialog(
+                                          content: Text("Slot Not Available"),
+                                          actions: <Widget>[
+                                            FlatButton(
+                                                child: Text("Ok"),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                }),
+                                          ],
+                                        );
+                                      },
                                     );
-                                  });
-                            },
-                            child: Container(
-                              height: 80,
-                              decoration:
-                                  capacityOfBike[index]["available"] == "true"
-                                      ? BoxDecoration(
-                                          border: Border.all(width: 1),
-                                          color: Colors.green)
-                                      : BoxDecoration(
-                                          border: Border.all(width: 1),
-                                          color: Colors.red),
-                              child: Center(
-                                  child: Text("Bike Slot No. " +
-                                      capacityOfBike[index]["slotName"])),
-                            ),
-                          );
+                                  },
+                                  child: Container(
+                                    height: 80,
+                                    decoration: capacityOfBike[index]
+                                                ["available"] ==
+                                            "true"
+                                        ? BoxDecoration(
+                                            border: Border.all(width: 1),
+                                            color: Colors.green)
+                                        : BoxDecoration(
+                                            border: Border.all(width: 1),
+                                            color: Colors.red),
+                                    child: Center(
+                                        child: Text("Bike Slot No. " +
+                                            capacityOfBike[index]["slotName"])),
+                                  ),
+                                );
                         }),
                   ),
                 ],
