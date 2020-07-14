@@ -137,42 +137,70 @@ class _VendorAddPackageState extends State<VendorAddPackage> {
   TextEditingController packageValidity = TextEditingController();
   TextEditingController packageCost = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
-    Future<String> addPackage() async {
-      final FirebaseUser user = await FirebaseAuth.instance.currentUser();
-      final String userEmail = user.email.toString();
-      Firestore.instance.collection('package').document().setData({
-        'email': userEmail.trim(),
-        'packageName': packageName.text.trim(),
-        'packageType': packageType.text.trim(),
-        'packageDescription': packageDescription.text.trim(),
-        'packageValidity': packageValidity.text.trim(),
-        'packageCost': packageCost.text.trim(),
-      });
-      print(userEmail);
-      showDialog(
+  void _showNullMessage() {
+    showDialog(
         context: context,
         builder: (BuildContext context) {
-          // return object of type Dialog
           return AlertDialog(
-            content: Text("Package Added Successfully"),
-            actions: <Widget>[
-              FlatButton(
+              content: Text("Please fill all the credentials!"),
+              actions: <Widget>[
+                FlatButton(
                   child: Text("Ok"),
                   onPressed: () {
                     Navigator.of(context).pop();
-                    Navigator.of(context).pop();
-                  }),
-            ],
-          );
-        },
-      );
-      return userEmail;
+                  },
+                )
+              ]);
+        });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Future<String> addPackage() async {
+      if (packageName.text.isEmpty ||
+          packageType.text.isEmpty ||
+          packageDescription.text.isEmpty ||
+          packageValidity.text.isEmpty ||
+          packageCost.text.isEmpty) {
+        _showNullMessage();
+      } else {
+        final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+        final String userEmail = user.email.toString();
+        Firestore.instance.collection('package').document().setData({
+          'email': userEmail.trim(),
+          'packageName': packageName.text.trim(),
+          'packageType': packageType.text.trim(),
+          'packageDescription': packageDescription.text.trim(),
+          'packageValidity': packageValidity.text.trim(),
+          'packageCost': packageCost.text.trim(),
+        });
+        print(userEmail);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            // return object of type Dialog
+            return AlertDialog(
+              content: Text("Package Added Successfully"),
+              actions: <Widget>[
+                FlatButton(
+                    child: Text("Ok"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    }),
+              ],
+            );
+          },
+        );
+        return userEmail;
+      }
     }
 
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text("Add Package")),
+      appBar: AppBar(
+          centerTitle: true,
+          title: Text("Add Package"),
+          backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),
       body: SingleChildScrollView(
         child: Center(
           child: Container(

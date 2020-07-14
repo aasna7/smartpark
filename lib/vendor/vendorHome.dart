@@ -5,6 +5,7 @@ import 'package:double_back_to_close/double_back_to_close.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smartpark/vendor/vendorReservation.dart';
 
 class VendorHome extends StatefulWidget {
   @override
@@ -41,18 +42,6 @@ class _VendorHomeState extends State<VendorHome> {
     });
     // print("capacity of bike" + capacityOfBike[0]);
     return userEmail;
-  }
-
-  Future getHistory() async {
-    String userEmail;
-    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    userEmail = user.email.toString();
-    QuerySnapshot qn = await Firestore.instance
-        .collection('reservation')
-        .where("vendorEmail", isEqualTo: userEmail)
-        .getDocuments();
-    print(qn.documents);
-    return qn.documents; // print("capacity of bike" + capacityOfBike[0]);
   }
 
   Widget build(BuildContext context) {
@@ -199,18 +188,23 @@ class _VendorHomeState extends State<VendorHome> {
               ),
             ),
             bikeSlots > 0 && carSlots > 0
-                ? InkWell(
-                    onTap: () {},
-                    child: Positioned(
-                      bottom: 50,
-                      left: 16,
-                      right: 16,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.blue[700],
-                        ),
+                ? Positioned(
+                    bottom: 50,
+                    left: 16,
+                    right: 16,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.blue[700],
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => VendorReservation()));
+                        },
                         child: Center(
                             child: Text(
                           'Reservation',

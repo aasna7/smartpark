@@ -17,17 +17,21 @@ class _RiderAddVehicleState extends State<RiderAddVehicle> {
   TextEditingController vehicleNumber = TextEditingController();
 
   Future<String> addVehicle() async {
-    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    final String userEmail = user.email.toString();
-    Firestore.instance.collection('vehicledetails').document().setData({
-      'email': userEmail.trim(),
-      'vehicleType': dropdownValue,
-      'vehicleModel': vehicleModel.text.trim(),
-      'vehicleNumber': vehicleNumber.text.trim()
-    });
-    print(userEmail);
-    return userEmail;
-    _showLoginSuccessDialog();
+    if (vehicleModel.text.isEmpty || vehicleNumber.text.isEmpty) {
+      _showNullMessage();
+    } else {
+      final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+      final String userEmail = user.email.toString();
+      Firestore.instance.collection('vehicledetails').document().setData({
+        'email': userEmail.trim(),
+        'vehicleType': dropdownValue,
+        'vehicleModel': vehicleModel.text.trim(),
+        'vehicleNumber': vehicleNumber.text.trim()
+      });
+      print(userEmail);
+      return userEmail;
+      _showLoginSuccessDialog();
+    }
   }
 
   void _showLoginSuccessDialog() {
@@ -49,6 +53,23 @@ class _RiderAddVehicleState extends State<RiderAddVehicle> {
         );
       },
     );
+  }
+
+  void _showNullMessage() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              content: Text("Please fill all the credentials!"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ]);
+        });
   }
 
   @override

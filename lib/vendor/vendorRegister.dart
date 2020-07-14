@@ -24,18 +24,27 @@ class _VendorRegisterState extends State<VendorRegister> {
     print(email.text);
     print(password.text);
 
-    FirebaseUser user = (await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: email.text.trim(), password: password.text.trim()))
-        .user;
-    createUserDb();
-    _showAccountCreatedDialog();
+    if (firstName.text.isEmpty ||
+        lastName.text.isEmpty ||
+        email.text.isEmpty ||
+        contact.text.isEmpty ||
+        password.text.isEmpty) {
+      _showNullMessage();
+    } else {
+      FirebaseUser user = (await FirebaseAuth.instance
+              .createUserWithEmailAndPassword(
+                  email: email.text.trim(), password: password.text.trim()))
+          .user;
+      createUserDb();
+      _showAccountCreatedDialog();
 
-    return user.uid;
+      return user.uid;
+    }
   }
 
   void initState() {
     passwordVisible = true;
+    super.initState();
   }
 
   Future<String> createUserDb() async {
@@ -72,6 +81,23 @@ class _VendorRegisterState extends State<VendorRegister> {
         );
       },
     );
+  }
+
+  void _showNullMessage() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              content: Text("Please fill all the credentials!"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ]);
+        });
   }
 
   @override

@@ -63,33 +63,43 @@ class _VendorAddLotState extends State<VendorAddLot> {
   }
 
   Future<String> addLot() async {
-    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    final String userEmail = user.email.toString();
-    for (var i = 1; i <= int.parse(lotBikeCapacity.text); i++) {
-      bikeCapacity.add({"slotName": "B" + i.toString(), "available": "true"});
+    if (lotName.text.isEmpty ||
+        lotOpenTime.text.isEmpty ||
+        lotCloseTime.text.isEmpty ||
+        lotCarCapacity.text.isEmpty ||
+        lotBikeCapacity.text.isEmpty ||
+        lotCarFee.text.isEmpty ||
+        lotBikeFee.text.isEmpty) {
+      _showNullMessage();
+    } else {
+      final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+      final String userEmail = user.email.toString();
+      for (var i = 1; i <= int.parse(lotBikeCapacity.text); i++) {
+        bikeCapacity.add({"slotName": "B" + i.toString(), "available": "true"});
+      }
+      for (var i = 1; i <= int.parse(lotCarCapacity.text); i++) {
+        carCapacity.add({"slotName": "C" + i.toString(), "available": "true"});
+      }
+      Firestore.instance.collection('parkinglot').document(userEmail).setData({
+        'email': userEmail.trim(),
+        'lotName': lotName.text.trim(),
+        'lotOpenTime': lotOpenTime.text.trim(),
+        'lotCloseTime': lotCloseTime.text.trim(),
+        'lotOpenDays': day,
+        'lotBikeCapacity': bikeCapacity,
+        'lotCarCapacity': carCapacity,
+        'lotBikeFee': lotBikeFee.text.trim(),
+        'lotCarFee': lotCarFee.text.trim(),
+        'lotLocation': new GeoPoint(
+            widget.locationCoord.latitude, widget.locationCoord.longitude),
+        'markerId': "1",
+        'userImage':
+            "https://us.123rf.com/450wm/djvstock/djvstock1712/djvstock171211649/92441351-stock-vector-parking-lot-with-parked-cars-colorful-design-vector-illustration.jpg?ver=6"
+      });
+      _showSuccessDialog();
+      print(userEmail);
+      return userEmail;
     }
-    for (var i = 1; i <= int.parse(lotCarCapacity.text); i++) {
-      carCapacity.add({"slotName": "C" + i.toString(), "available": "true"});
-    }
-    Firestore.instance.collection('parkinglot').document(userEmail).setData({
-      'email': userEmail.trim(),
-      'lotName': lotName.text.trim(),
-      'lotOpenTime': lotOpenTime.text.trim(),
-      'lotCloseTime': lotCloseTime.text.trim(),
-      'lotOpenDays': day,
-      'lotBikeCapacity': bikeCapacity,
-      'lotCarCapacity': carCapacity,
-      'lotBikeFee': lotBikeFee.text.trim(),
-      'lotCarFee': lotCarFee.text.trim(),
-      'lotLocation': new GeoPoint(
-          widget.locationCoord.latitude, widget.locationCoord.longitude),
-      'markerId': "1",
-      'userImage':
-          "https://us.123rf.com/450wm/djvstock/djvstock1712/djvstock171211649/92441351-stock-vector-parking-lot-with-parked-cars-colorful-design-vector-illustration.jpg?ver=6"
-    });
-    _showSuccessDialog();
-    print(userEmail);
-    return userEmail;
   }
 
   void _showSuccessDialog() {
@@ -111,6 +121,23 @@ class _VendorAddLotState extends State<VendorAddLot> {
         );
       },
     );
+  }
+
+  void _showNullMessage() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              content: Text("Please fill all the credentials!"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ]);
+        });
   }
 
   @override

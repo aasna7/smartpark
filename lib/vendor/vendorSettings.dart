@@ -85,8 +85,33 @@ class _VendorSettingsState extends State<VendorSettings> {
                     title: Text("Log Out?"),
                     trailing: Icon(Icons.keyboard_arrow_right),
                     onTap: () async {
-                      await FirebaseAuth.instance.signOut();
-                      Navigator.of(context).pushNamed('/WelcomeScreen');
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Log Out?'),
+                              content:
+                                  Text("Are you sure you want to log out?"),
+                              actions: <Widget>[
+                                FlatButton(
+                                  child: Text("YES"),
+                                  onPressed: () async {
+                                    //Put your code here which you want to execute on Yes button click.
+                                    await FirebaseAuth.instance.signOut();
+                                    Navigator.of(context)
+                                        .pushNamed('/WelcomeScreen');
+                                  },
+                                ),
+                                FlatButton(
+                                  child: Text("NO"),
+                                  onPressed: () {
+                                    //Put your code here which you want to execute on No button click.
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          });
                     },
                   )
                 ],

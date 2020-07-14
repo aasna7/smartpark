@@ -13,7 +13,10 @@ class _RiderHistoryState extends State<RiderHistory> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Rider History"),
+        centerTitle: true,
+        backgroundColor: Color.fromARGB(0xff, 11, 34, 66),
       ),
+      body: RiderHistoryList(),
     );
   }
 }

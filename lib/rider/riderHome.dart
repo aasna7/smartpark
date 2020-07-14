@@ -408,9 +408,9 @@ class _RiderBookingPageState extends State<RiderBookingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          centerTitle: true,
-          title: Text("Book Slots"),
-        ),
+            centerTitle: true,
+            title: Text("Book Slots"),
+            backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),
         body: Stack(
           children: <Widget>[
             Padding(
