@@ -40,7 +40,7 @@ class _RiderAddVehicleState extends State<RiderAddVehicle> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          content: Text("Login Success"),
+          content: Text("Vehicle Added Successfully"),
           actions: <Widget>[
             FlatButton(
               child: Text("Ok"),

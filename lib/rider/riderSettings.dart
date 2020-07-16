@@ -65,7 +65,7 @@ class _RiderSettingsState extends State<RiderSettings> {
                                 FlatButton(
                                   child: Text("YES"),
                                   onPressed: () async {
-                                    //Put your code here which you want to execute on Yes button click.
+                                    //If the user agrees to log out from the system
                                     await FirebaseAuth.instance.signOut();
                                     Navigator.of(context)
                                         .pushNamed('/WelcomeScreen');

@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartpark/rider/riderLogin.dart';
 
+import 'package:smartpark/vendor/vendorLogin.dart';
+
 class RiderRegister extends StatefulWidget {
   @override
   _RiderRegisterState createState() => _RiderRegisterState();
@@ -30,19 +32,52 @@ class _RiderRegisterState extends State<RiderRegister> {
         password.text.isEmpty) {
       _showNullMessage();
     } else {
-      FirebaseUser user = (await FirebaseAuth.instance
-              .createUserWithEmailAndPassword(
-                  email: email.text.trim(), password: password.text.trim()))
-          .user;
-      createUserDb();
-      _showAccountCreatedDialog();
+      try {
+        setState(() {
+          isLoading = true;
+        });
+        FirebaseUser user = (await FirebaseAuth.instance
+                .createUserWithEmailAndPassword(
+                    email: email.text.trim(), password: password.text.trim()))
+            .user;
+        createUserDb();
+        setState(() {
+          isLoading = false;
+        });
+        _showAccountCreatedDialog();
 
-      return user.uid;
+        return user.uid;
+      } catch (e) {
+        print(e.message);
+
+        setState(() {
+          isLoading = false;
+        });
+        _showErrorMessage();
+      }
     }
+  }
+
+  void _showErrorMessage() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              content: Text("Error Registering"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ]);
+        });
   }
 
   void initState() {
     passwordVisible = true;
+    super.initState();
   }
 
   Future<String> createUserDb() async {
@@ -106,8 +141,8 @@ class _RiderRegisterState extends State<RiderRegister> {
           title: Text('Rider Register'),
           backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),
       body: SingleChildScrollView(
-        child: Center(
-          child: Container(
+        child: Stack(children: <Widget>[
+          Container(
             //height:250,
             margin: EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -245,7 +280,20 @@ class _RiderRegisterState extends State<RiderRegister> {
               ],
             ),
           ),
-        ),
+          isLoading
+              ? Positioned.fill(
+                  child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.black.withOpacity(0.5),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.green,
+                    ),
+                  ),
+                ))
+              : Container(),
+        ]),
       ),
     );
   }

@@ -264,6 +264,8 @@ class _RiderLoginState extends State<RiderLogin> {
             isLoading
                 ? Positioned.fill(
                     child: Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
                     color: Colors.black.withOpacity(0.5),
                     child: Center(
                       child: CircularProgressIndicator(

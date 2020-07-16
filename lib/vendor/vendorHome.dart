@@ -70,34 +70,7 @@ class _VendorHomeState extends State<VendorHome> {
                           int number = index + 1;
                           return capacityOfCar[index]["available"] == "true"
                               ? InkWell(
-                                  onTap: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            content: Stack(
-                                              overflow: Overflow.visible,
-                                              children: <Widget>[
-                                                Positioned(
-                                                  right: -40.0,
-                                                  top: -40.0,
-                                                  child: InkResponse(
-                                                    onTap: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                    child: CircleAvatar(
-                                                      child: Icon(Icons.close),
-                                                      backgroundColor:
-                                                          Colors.red,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        });
-                                  },
+                                  onTap: () {},
                                   child: Container(
                                     height: 120,
                                     decoration: capacityOfCar[index]
@@ -138,35 +111,7 @@ class _VendorHomeState extends State<VendorHome> {
                         itemBuilder: (BuildContext context, int index) {
                           int number = index + 1;
                           return InkWell(
-                            onTap: () {
-                              showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                child: new CupertinoAlertDialog(
-                                  title: new Column(
-                                    children: <Widget>[
-                                      new Text(
-                                          "Do you want to book this slot?"),
-                                      new Icon(
-                                        Icons.favorite,
-                                        color: Colors.red,
-                                      ),
-                                    ],
-                                  ),
-                                  content: new Text("Bike slot no. $number"),
-                                  actions: <Widget>[
-                                    new FlatButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                          print("You have selected " +
-                                              capacityOfBike[index]
-                                                  ["slotName"]);
-                                        },
-                                        child: new Text("OK"))
-                                  ],
-                                ),
-                              );
-                            },
+                            onTap: () {},
                             child: Container(
                               height: 80,
                               decoration:

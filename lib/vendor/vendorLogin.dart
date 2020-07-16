@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -267,6 +265,8 @@ class _VendorLoginState extends State<VendorLogin> {
             isLoading
                 ? Positioned.fill(
                     child: Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
                     color: Colors.black.withOpacity(0.5),
                     child: Center(
                       child: CircularProgressIndicator(
