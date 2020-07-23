@@ -75,7 +75,10 @@ class _RiderAddVehicleState extends State<RiderAddVehicle> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text("Add Lot")),
+      appBar: AppBar(
+          centerTitle: true,
+          title: Text("Add Vehicle"),
+          backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),
       body: SingleChildScrollView(
         child: Stack(
           children: <Widget>[

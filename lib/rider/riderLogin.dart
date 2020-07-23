@@ -35,7 +35,7 @@ class _RiderLoginState extends State<RiderLogin> {
             .collection('vehicledetails')
             .document(email.text)
             .get();
-        if (docRef.data['email'] == email.text) {
+        if (docRef.exists) {
           setState(() {
             print(email.text);
             existance = true;
@@ -53,7 +53,7 @@ class _RiderLoginState extends State<RiderLogin> {
         _showLoginSuccessDialog();
         return user.uid;
       } catch (e) {
-        print(e.message);
+        print(e);
 
         setState(() {
           isLoading = false;

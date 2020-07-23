@@ -143,7 +143,10 @@ class _VendorAddLotState extends State<VendorAddLot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text("Add Lot")),
+      appBar: AppBar(
+          centerTitle: true,
+          title: Text("Add Lot"),
+          backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),
       body: SingleChildScrollView(
         child: Center(
           child: Container(
@@ -706,8 +709,9 @@ class _PlacePickerState extends State<PlacePicker> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Select Lot Location"),
-      ),
+          title: Text("Select Lot Location"),
+          centerTitle: true,
+          backgroundColor: Color.fromARGB(0xff, 11, 34, 66)),
       body: SafeArea(
         child: Stack(
           children: <Widget>[
