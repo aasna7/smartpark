@@ -55,7 +55,7 @@ flutter:
     - images/car1.png
     - images/car.png
     - images/park.png
-    - images/scooter.png
+    
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
